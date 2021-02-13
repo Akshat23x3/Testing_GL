@@ -11,7 +11,7 @@ GLfloat vertices[] =
 
 class Application : protected GL_GRAPHICS
 {
-	Shader_Object* shader = 01;
+	Shader_Object* shader = 0;
 	GLuint VBO = 0, VAO = 0;
 public:
 
