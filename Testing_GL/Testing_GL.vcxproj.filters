@@ -32,5 +32,16 @@
     <ClInclude Include="My_GL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Textures.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SHADER.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="SHADER.fs">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

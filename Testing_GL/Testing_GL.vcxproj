@@ -141,6 +141,11 @@
     <ClInclude Include="Shader_Files.h" />
     <ClInclude Include="Shader_Object.h" />
     <ClInclude Include="system.h" />
+    <ClInclude Include="Textures.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SHADER.fs" />
+    <None Include="SHADER.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
