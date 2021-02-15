@@ -1,2 +1,2 @@
-# ARK GAME ENGINE
-![Alt text](relative/path/to/ARK_logo.png?raw=true "Title")
+#      ARK GAME ENGINE
+![alt text](https://github.com/Akshat69/Testing_GL/master/ARK_logo.png?raw=true)
