@@ -142,6 +142,7 @@
     <ClInclude Include="Shader_Object.h" />
     <ClInclude Include="system.h" />
     <ClInclude Include="Textures.h" />
+    <ClInclude Include="Transformations.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SHADER.fs" />
