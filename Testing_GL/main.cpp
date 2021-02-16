@@ -1,5 +1,6 @@
 #include "Shader_Object.h"
 #include "My_GL.h"
+#include "Transformations.h"
 #include "system.h"
 #include "Textures.h"
 
@@ -22,6 +23,7 @@ class Application : protected GL_GRAPHICS
 {
 	Shader_Object* shader = 0;
 	Textures* texture = 0;
+	Transformations* transform = 0;
 	GLuint VBO = 0, VAO = 0;
 	GLuint EBO = 0;
 public:
@@ -53,6 +55,8 @@ void Application::Begin()
 	this->set_GL_options();
 	shader = CreateObjectComponent<Shader_Object>();
 	texture = CreateObjectComponent<Textures>();
+	transform = CreateObjectComponent<Transformations>();
+
 	shader->compile_shaders();
 
 	glGenVertexArrays(1, &VAO);
@@ -86,12 +90,18 @@ void Application::run()
 {
 	// Draw our first triangle
 	glUseProgram(shader->get_shader_program());
-	glBindVertexArray(VAO);
 	//glDrawArrays(GL_TRIANGLES, 0, 3);
+
+	//Transformations
+	transform->Set_Position(glm::vec3(0.0f, 0.0f, 0.0f));
+	transform->Set_Rotation(glm::vec3(0.0f, 0.0f, 0.0f));
+	GLint transform_location = glGetUniformLocation(shader->get_shader_program(), "transform");
+	glUniformMatrix4fv(transform_location, 1, GL_FALSE, glm::value_ptr(transform->Transform()));
 
 	//Texture Rendering
 	texture->Render(shader->get_shader_program());
 
+	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 }

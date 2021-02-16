@@ -76,7 +76,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\C++ GAMES\Testing_GL\Dependencies\SOIL2\include;D:\C++ GAMES\Testing_GL\Dependencies\GLM\glm\glm;D:\C++ GAMES\Testing_GL\Dependencies\GLEW\include;D:\C++ GAMES\Testing_GL\Dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\C++ GAMES\Testing_GL\Dependencies\SOIL2\include;D:\C++ GAMES\Testing_GL\Dependencies\GLM\glm;D:\C++ GAMES\Testing_GL\Dependencies\GLEW\include;D:\C++ GAMES\Testing_GL\Dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -106,7 +106,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\C++ GAMES\Testing_GL\Dependencies\SOIL2\include;D:\C++ GAMES\Testing_GL\Dependencies\GLM\glm\glm;D:\C++ GAMES\Testing_GL\Dependencies\GLEW\include;D:\C++ GAMES\Testing_GL\Dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\C++ GAMES\Testing_GL\Dependencies\SOIL2\include;D:\C++ GAMES\Testing_GL\Dependencies\GLM\glm;D:\C++ GAMES\Testing_GL\Dependencies\GLEW\include;D:\C++ GAMES\Testing_GL\Dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

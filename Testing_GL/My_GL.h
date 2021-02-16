@@ -10,12 +10,12 @@ class GL_GRAPHICS
 protected:
 	GLint Window_Width = 1280, Window_Height = 800; int Major_Version = 4, Minor_Version = 6;
 public:
-	void intializeGraphics();
+	int intializeGraphics();
 	virtual void Begin() = 0;
 	virtual void run() = 0;
 };
 
-void GL_GRAPHICS::intializeGraphics()
+int GL_GRAPHICS::intializeGraphics()
 {
 	//Initialise the GLFW
 	if (!glfwInit())
@@ -41,6 +41,8 @@ void GL_GRAPHICS::intializeGraphics()
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
+
+		return EXIT_FAILURE;
 	}
 
 	glfwMakeContextCurrent(window);
@@ -51,7 +53,7 @@ void GL_GRAPHICS::intializeGraphics()
 	// Initialize GLEW to setup the OpenGL Function pointers
 	if (GLEW_OK != glewInit())
 	{
-		std::cout << "Failed to initialize GLEW" << std::endl;
+		std::cout << "Failed to initialize GLEW" << std::endl; return EXIT_FAILURE;
 	}
 
 	// Define the viewport dimensions

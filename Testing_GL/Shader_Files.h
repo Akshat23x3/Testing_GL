@@ -15,12 +15,14 @@ protected:
 
 	out vec3 fs_color;
 	out vec2 tex_coord;
+
+	uniform mat4 transform;
 		
 	void main()
 	{
+		gl_Position = transform * vec4(position, 1.0);
 		fs_color = vs_color;
 		tex_coord = vec2(texcoord.x, 1.0 - texcoord.y);
-		gl_Position = vec4(position, 1.0);
 	}
 	)";
 
