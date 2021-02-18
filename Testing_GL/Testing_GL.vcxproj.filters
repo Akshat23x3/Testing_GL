@@ -35,7 +35,10 @@
     <ClInclude Include="Textures.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Transformations.h">
+    <ClInclude Include="Transformations_Projections.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

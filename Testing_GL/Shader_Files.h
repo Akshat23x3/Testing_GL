@@ -10,10 +10,8 @@ protected:
 	#version 460 core
 
 	layout(location = 0) in vec3 position;
-	layout(location = 1) in vec3 vs_color;
 	layout(location = 2) in vec3 texcoord;
 
-	out vec3 fs_color;
 	out vec2 tex_coord;
 
 	uniform mat4 transform;
@@ -21,7 +19,6 @@ protected:
 	void main()
 	{
 		gl_Position = transform * vec4(position, 1.0);
-		fs_color = vs_color;
 		tex_coord = vec2(texcoord.x, 1.0 - texcoord.y);
 	}
 	)";
@@ -30,7 +27,6 @@ protected:
 
 	#version 460 core
 	
-	in vec3 fs_color;
 	in vec2 tex_coord;
 	out vec4 color;
 

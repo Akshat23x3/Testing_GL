@@ -1,8 +1,6 @@
-#pragma once
-
 
 template <class T>
-T* CreateObjectComponent()
+static T* CreateObjectComponent()
 {
 	return new T;
 }

@@ -137,12 +137,13 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="My_GL.h" />
     <ClInclude Include="Shader_Files.h" />
     <ClInclude Include="Shader_Object.h" />
     <ClInclude Include="system.h" />
     <ClInclude Include="Textures.h" />
-    <ClInclude Include="Transformations.h" />
+    <ClInclude Include="Transformations_Projections.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SHADER.fs" />
