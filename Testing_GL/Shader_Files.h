@@ -14,11 +14,11 @@ protected:
 
 	out vec2 tex_coord;
 
-	uniform mat4 transform;
+	uniform mat4 MVP;
 		
 	void main()
 	{
-		gl_Position = transform * vec4(position, 1.0);
+		gl_Position = MVP * vec4(position, 1.0);
 		tex_coord = vec2(texcoord.x, 1.0 - texcoord.y);
 	}
 	)";

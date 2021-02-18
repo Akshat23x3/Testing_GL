@@ -182,7 +182,7 @@ void Application::run()
     //Transformations
     transform->Set_Position(glm::vec3(0.0f, 0.0f, 0.0f));
     transform->Set_Rotation(glm::vec3(45.0f, 45.0f, 45.0f));
-    int transform_loc = glGetUniformLocation(shader->get_shader_program(), "transform");
+    int transform_loc = glGetUniformLocation(shader->get_shader_program(), "MVP");
     glUniformMatrix4fv(transform_loc, 1, GL_FALSE, glm::value_ptr(transform->Project_On_Screen()));
 
     glBindVertexArray(VAO);
