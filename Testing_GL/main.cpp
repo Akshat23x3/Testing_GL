@@ -176,7 +176,7 @@ void Application::run()
 {
     //Texture Rendering
     texture->Render(shader->get_shader_program());
-
+    
     glUseProgram(shader->get_shader_program());
 
     //Transformations
