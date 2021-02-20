@@ -1,8 +1,9 @@
 #include "Shader_Object.h"
 #include "My_GL.h"
 #include "Transformations_Projections.h"
-#include "system.h"
 #include "Textures.h"
+
+
 
 /*GLfloat vertices[] =
 {
@@ -13,51 +14,25 @@
 	-0.5f, 0.5f, 0.0f,  1.0f, 0.0f, 1.0f,   0.0f, 1.0f
 };*/
 
-/*
-GLfloat vertices[] = {
-    -0.5f * 500, -0.5f * 500, -0.5f * 500,  0.0f, 0.0f,
-    0.5f * 500, -0.5f * 500, -0.5f * 500,  1.0f, 0.0f,
-    0.5f * 500,  0.5f * 500, -0.5f * 500,  1.0f, 1.0f,
-    0.5f * 500,  0.5f * 500, -0.5f * 500,  1.0f, 1.0f,
-    -0.5f * 500,  0.5f * 500, -0.5f * 500,  0.0f, 1.0f,
-    -0.5f * 500, -0.5f * 500, -0.5f * 500,  0.0f, 0.0f,
-
-    -0.5f * 500, -0.5f * 500,  0.5f * 500,  0.0f, 0.0f,
-    0.5f * 500, -0.5f * 500,  0.5f * 500,  1.0f, 0.0f,
-    0.5f * 500,  0.5f * 500,  0.5f * 500,  1.0f, 1.0f,
-    0.5f * 500,  0.5f * 500,  0.5f * 500,  1.0f, 1.0f,
-    -0.5f * 500,  0.5f * 500,  0.5f * 500,  0.0f, 1.0f,
-    -0.5f * 500, -0.5f * 500,  0.5f * 500,  0.0f, 0.0f,
-
-    -0.5f * 500,  0.5f * 500,  0.5f * 500,  1.0f, 0.0f,
-    -0.5f * 500,  0.5f * 500, -0.5f * 500,  1.0f, 1.0f,
-    -0.5f * 500, -0.5f * 500, -0.5f * 500,  0.0f, 1.0f,
-    -0.5f * 500, -0.5f * 500, -0.5f * 500,  0.0f, 1.0f,
-    -0.5f * 500, -0.5f * 500,  0.5f * 500,  0.0f, 0.0f,
-    -0.5f * 500,  0.5f * 500,  0.5f * 500,  1.0f, 0.0f,
-
-    0.5f * 500,  0.5f * 500,  0.5f * 500,  1.0f, 0.0f,
-    0.5f * 500,  0.5f * 500, -0.5f * 500,  1.0f, 1.0f,
-    0.5f * 500, -0.5f * 500, -0.5f * 500,  0.0f, 1.0f,
-    0.5f * 500, -0.5f * 500, -0.5f * 500,  0.0f, 1.0f,
-    0.5f * 500, -0.5f * 500,  0.5f * 500,  0.0f, 0.0f,
-    0.5f * 500,  0.5f * 500,  0.5f * 500,  1.0f, 0.0f,
-
-    -0.5f * 500, -0.5f * 500, -0.5f * 500,  0.0f, 1.0f,
-    0.5f * 500, -0.5f * 500, -0.5f * 500,  1.0f, 1.0f,
-    0.5f * 500, -0.5f * 500,  0.5f * 500,  1.0f, 0.0f,
-    0.5f * 500, -0.5f * 500,  0.5f * 500,  1.0f, 0.0f,
-    -0.5f * 500, -0.5f * 500,  0.5f * 500,  0.0f, 0.0f,
-    -0.5f * 500, -0.5f * 500, -0.5f * 500,  0.0f, 1.0f,
-
-    -0.5f * 500,  0.5f * 500, -0.5f * 500,  0.0f, 1.0f,
-    0.5f * 500,  0.5f * 500, -0.5f * 500,  1.0f, 1.0f,
-    0.5f * 500,  0.5f * 500,  0.5f * 500,  1.0f, 0.0f,
-    0.5f * 500,  0.5f * 500,  0.5f * 500,  1.0f, 0.0f,
-    -0.5f * 500,  0.5f * 500,  0.5f * 500,  0.0f, 0.0f,
-    -0.5f * 500,  0.5f * 500, -0.5f * 500,  0.0f, 1.0f
+glm::vec3 cubePositions[] =
+{
+    glm::vec3(0.0f, 0.0f, -3.0f),
+    glm::vec3(2.0f, 5.0f, -15.0f),
+    glm::vec3(-1.5f, -2.2f, -2.5f),
+    glm::vec3(-3.8f, -2.0f, -12.3f),
+    glm::vec3(2.4f, -0.4f, -3.5f),
+    glm::vec3(-1.7f, 3.0f, -7.5f),
+    glm::vec3(1.3f, -2.0f, -2.5f),
+    glm::vec3(1.5f, 2.0f, -2.5f),
+    glm::vec3(1.5f, 0.2f, -1.5f),
+    glm::vec3(-1.3f, 1.0f, -1.5f)
 };
- */
+
+struct Last_MousePos
+{
+    GLfloat x = WINDOW_WIDTH / 2.0;
+    GLfloat y = WINDOW_HEIGHT / 2.0;
+}lastMPOS;
 
  // use with Perspective Projection
 GLfloat vertices[] = {
@@ -104,7 +79,7 @@ GLfloat vertices[] = {
     -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 };
 
-class Application : protected GL_GRAPHICS
+class Application : public GL_GRAPHICS
 {
 	Shader_Object* shader = 0;
 	Textures* texture = 0;
@@ -125,6 +100,8 @@ public:
 	void set_GL_options();
 	void Begin();
 	void run();
+    void initiateInput();
+    //void UpdateInput();
 	~Application();
 };
 
@@ -174,19 +151,29 @@ void Application::Begin()
 
 void Application::run()
 {
+    EngineCamera->ProcessMovement(deltaTime);
     //Texture Rendering
     texture->Render(shader->get_shader_program());
     
     glUseProgram(shader->get_shader_program());
 
     //Transformations
-    transform->Set_Position(glm::vec3(0.0f, 0.0f, 0.0f));
-    transform->Set_Rotation(glm::vec3(45.0f, 45.0f, 45.0f));
-    int transform_loc = glGetUniformLocation(shader->get_shader_program(), "MVP");
-    glUniformMatrix4fv(transform_loc, 1, GL_FALSE, glm::value_ptr(transform->Project_On_Screen()));
+    //transform->Set_Position(glm::vec3(0.0f, 0.0f, -1.0f));
+    //transform->Set_Rotation(glm::vec3(45.0f, 45.0f, 45.0f));
 
     glBindVertexArray(VAO);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+    for (int i = 0; i < 10; i++)
+    {
+        transform->Set_Position(cubePositions[i]);
+        glm::vec3 Rotation_angle(20.0f * i);
+        transform->Set_Rotation(Rotation_angle);
+
+        int transform_loc = glGetUniformLocation(shader->get_shader_program(), "MVP");
+        glUniformMatrix4fv(transform_loc, 1, GL_FALSE, glm::value_ptr(transform->Project_On_Screen()));
+       
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
+    
     glBindVertexArray(0);
 
 	//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -199,6 +186,50 @@ Application::~Application()
 	//glDeleteBuffers(1, &EBO);
 	glDeleteProgram(shader->get_shader_program());
 }
+
+void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode)
+{
+    if (key >= 0 && key <= 1024)
+    {
+        if (GLFW_PRESS == action)
+        {
+            keys[key] = true;
+        }
+        else if (GLFW_RELEASE == action)
+        {
+            keys[key] = false;
+        }
+    }
+}
+void ScrollCallback(GLFWwindow* window, double xOffset, double yOffset)
+{
+    EngineCamera->ProcessMouseScroll(yOffset);
+}
+void MouseCallback(GLFWwindow* window, double xPos, double yPos)
+{
+    if (first_Mouse)
+    {
+        lastMPOS.x = xPos;
+        lastMPOS.y = yPos;
+        first_Mouse = false;
+    }
+
+    GLfloat xOffset = -1 * (xPos - lastMPOS.x);
+    GLfloat yOffset = -1 * (lastMPOS.y - yPos);
+
+    lastMPOS.x = xPos; lastMPOS.y = yPos;
+
+    EngineCamera->ProcessMouseMovement(xOffset, yOffset);
+}
+
+void Application::initiateInput()
+{
+    glfwSetKeyCallback(this->GetWindow(), KeyCallback);
+    glfwSetCursorPosCallback(this->GetWindow(), MouseCallback);
+    glfwSetScrollCallback(this->GetWindow(), ScrollCallback);
+    glfwSetInputMode(this->GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+}
+
 
 int main()
 {

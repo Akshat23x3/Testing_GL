@@ -2,17 +2,22 @@
 #define GLEW_STATIC
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include "system.h"
 
 
 class GL_GRAPHICS
 {
 	GLFWwindow* window = 0;
+	
 protected:
 	GLint Window_Width = 1280, Window_Height = 800; int Major_Version = 4, Minor_Version = 6;
 public:
+	GLfloat deltaTime = 0;
 	int intializeGraphics();
 	virtual void Begin() = 0;
 	virtual void run() = 0;
+	virtual void initiateInput() = 0;
+	GLFWwindow* GetWindow() { return window; }
 };
 
 int GL_GRAPHICS::intializeGraphics()
@@ -60,10 +65,19 @@ int GL_GRAPHICS::intializeGraphics()
 	glViewport(0, 0, screenWidth, screenHeight);
 
 	this->Begin();
+	this->initiateInput();
+
+	GLfloat lastframe = 0.0f;
 
 	//Looping until window closes
-	while (!glfwWindowShouldClose(window))
+	while (!glfwWindowShouldClose(window) && !glfwGetKey(this->window, GLFW_KEY_ESCAPE))
 	{
+		//DeltaTime
+		GLfloat currentframe = (GLfloat)glfwGetTime();
+		deltaTime = currentframe - lastframe;
+		lastframe = currentframe;
+		/// 
+
 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

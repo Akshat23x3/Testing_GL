@@ -10,12 +10,11 @@ CameraComponent* EngineCamera = new CameraComponent();
 
 class Transformations
 {
-
 	glm::vec3 Position = glm::vec3(1);
 	glm::vec3 Rotation = glm::vec3(1);
 	glm::vec3 Scale = glm::vec3(1);
 
-	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)WINDOW_WIDTH / WINDOW_HEIGHT, 0.1f, 1000.0f);
+	glm::mat4 projection = glm::perspective(EngineCamera->GetCameraZoom(), (GLfloat)WINDOW_WIDTH / WINDOW_HEIGHT, 0.1f, 1000.0f);
 	glm::mat4 model = glm::mat4(1.0f);
 	glm::mat4 view = glm::mat4(1.0f);
 
@@ -37,7 +36,7 @@ public:
 		model = glm::rotate(model, glm::radians(this->Rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
 		model = glm::scale(model, Scale);
 
-		view = glm::translate(view, EngineCamera->GetDirection());
+		view = EngineCamera->GetViewMatrix();
 
 		return projection * view * model;
 	}
