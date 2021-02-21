@@ -14,7 +14,7 @@ class Transformations
 	glm::vec3 Rotation = glm::vec3(1);
 	glm::vec3 Scale = glm::vec3(1);
 
-	glm::mat4 projection = glm::perspective(EngineCamera->GetCameraZoom(), (GLfloat)WINDOW_WIDTH / WINDOW_HEIGHT, 0.1f, 1000.0f);
+	glm::mat4 projection = glm::perspective(glm::radians(EngineCamera->GetCameraZoom()), (GLfloat)WINDOW_WIDTH / WINDOW_HEIGHT, 0.1f, 1000.0f);
 	glm::mat4 model = glm::mat4(1.0f);
 	glm::mat4 view = glm::mat4(1.0f);
 

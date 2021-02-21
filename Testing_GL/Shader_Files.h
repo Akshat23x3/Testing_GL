@@ -5,7 +5,7 @@
 
 class SHADER_SOURCE_FILES
 {
-protected:
+public:
 	const char* vertex_source = R"(
 	#version 460 core
 
@@ -30,11 +30,40 @@ protected:
 	in vec2 tex_coord;
 	out vec4 color;
 
+	//uniform vec3 light_color;
+
 	uniform sampler2D Texture;
 	
 	void main()
 	{
 		color = texture(Texture, tex_coord);
+	}
+	)";
+
+	const GLchar* lamp_vs = R"(
+
+	#version 460 core
+
+	layout(location = 0) in vec3 position;
+
+	uniform mat4 MVP;
+		
+	void main()
+	{
+		gl_Position = MVP * vec4(position, 1.0f);
+	}
+	)";
+
+	const GLchar* lamp_fs = R"(
+
+	#version 460 core
+
+    uniform vec3 light_color;
+	out vec4 color;
+	
+	void main()
+	{
+		color = vec4(light_color, 1.0f);
 	}
 	)";
 

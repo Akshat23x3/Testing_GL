@@ -138,6 +138,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CameraComponent.h" />
+    <ClInclude Include="Light.h" />
     <ClInclude Include="My_GL.h" />
     <ClInclude Include="Shader_Files.h" />
     <ClInclude Include="Shader_Object.h" />

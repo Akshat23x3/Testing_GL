@@ -2,6 +2,7 @@
 #include "My_GL.h"
 #include "Transformations_Projections.h"
 #include "Textures.h"
+#include "Light.h"
 
 
 
@@ -84,6 +85,8 @@ class Application : public GL_GRAPHICS
 	Shader_Object* shader = 0;
 	Textures* texture = 0;
 	Transformations* transform = 0;
+    Light* light = 0; 
+
 	GLuint VBO = 0, VAO = 0;
 	//GLuint EBO = 0;
 public:
@@ -116,9 +119,15 @@ void Application::Begin()
 {
 	//Setting GL_SETTINGS AND OPTIONS
 	this->set_GL_options();
-	shader = CreateObjectComponent<Shader_Object>();
+
+    //Shader_Files Initiating
+    SHADER_SOURCE_FILES* shader_file = CreateObjectComponent<SHADER_SOURCE_FILES>();
+
+	// Objects
+	shader = new Shader_Object(shader_file->vertex_source, shader_file->fragment_source);
 	texture = CreateObjectComponent<Textures>();
 	transform = CreateObjectComponent<Transformations>();
+    light = CreateObjectComponent<Light>();
 
 	shader->compile_shaders();
 
@@ -146,20 +155,22 @@ void Application::Begin()
 
 	glBindVertexArray(0); 
 
+    //Light
+    light->Initiate_Light_Source(vertices);
+
 	texture->Load_Texture("Data/Textures/container.png");
 }
 
 void Application::run()
 {
     EngineCamera->ProcessMovement(deltaTime);
+
+    light->Use(transform);
+
     //Texture Rendering
     texture->Render(shader->get_shader_program());
     
     glUseProgram(shader->get_shader_program());
-
-    //Transformations
-    //transform->Set_Position(glm::vec3(0.0f, 0.0f, -1.0f));
-    //transform->Set_Rotation(glm::vec3(45.0f, 45.0f, 45.0f));
 
     glBindVertexArray(VAO);
     for (int i = 0; i < 10; i++)
@@ -175,8 +186,6 @@ void Application::run()
     }
     
     glBindVertexArray(0);
-
-	//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
 Application::~Application()
@@ -185,6 +194,12 @@ Application::~Application()
 	glDeleteBuffers(1, &VBO);
 	//glDeleteBuffers(1, &EBO);
 	glDeleteProgram(shader->get_shader_program());
+
+    delete shader;
+    delete texture;
+    delete transform;
+    delete light;
+
 }
 
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode)

@@ -1,15 +1,22 @@
 #include "Shader_Files.h"
 #include <iostream>
 
-class Shader_Object : protected SHADER_SOURCE_FILES
+class Shader_Object
 {
 	GLuint vertex_shader = 0, fragment_shader = 0;
 	GLuint shader_program = 0;
+	const GLchar* vertex_source = nullptr;
+	const GLchar* fragment_source = nullptr;
 
 	void Build_vertex_shader();
 	void Build_fragment_shader();
 
 public:
+	Shader_Object(const GLchar* vertex_source, const GLchar* fragment_source)
+	{
+		this->vertex_source = vertex_source;
+		this->fragment_source = fragment_source;
+	}
 	void compile_shaders();
 	GLuint get_shader_program() { return this->shader_program; }
 };
