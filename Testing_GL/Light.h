@@ -1,5 +1,4 @@
 #include <glm/glm.hpp>
-#include <GLFW/glfw3.h>
 
 class Light
 {
@@ -29,10 +28,10 @@ public:
 	glm::vec3 GetDirection() { return this->direction; }
 
 	//Execution 
-	void Initiate_Light_Source(const GLfloat* vertices);
+	void Initiate_Light_Source();
 
 	//Rendering
-	void Use(Transformations* transform);
+	void Use();
 
 	~Light();
 };
@@ -55,8 +54,52 @@ Light::Light()
 	shader->compile_shaders();
 }
 
-void Light::Initiate_Light_Source(const GLfloat* vertices)
+void Light::Initiate_Light_Source()
 {
+	const GLfloat vertices[] = {
+	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+	0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+	0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+	0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+	-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+	0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+	0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+	0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+	};
+
 	glGenVertexArrays(1, &this->VAO);
 	glBindVertexArray(this->VAO);
 
@@ -70,21 +113,21 @@ void Light::Initiate_Light_Source(const GLfloat* vertices)
 	glEnableVertexAttribArray(0);
 
 	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void Light::Use(Transformations* transform)
+void Light::Use()
 {
 	glUseProgram(this->shader->get_shader_program());
 
+	Transformations* transform = CreateObjectComponent<Transformations>();
 	transform->Set_Position(this->position);
 	transform->Set_Rotation(glm::vec3(0.0f));
-	//transform->Set_Scale(glm::vec3(1.f));
+	transform->Set_Scale(glm::vec3(0.2f));
 
-	GLuint transform_loc = glGetUniformLocation(this->shader->get_shader_program(), "MVP");
+	int transform_loc = glGetUniformLocation(this->shader->get_shader_program(), "MVP");
 	glUniformMatrix4fv(transform_loc, 1, GL_FALSE, glm::value_ptr(transform->Project_On_Screen()));
 
-	GLuint color_loc = glGetUniformLocation(this->shader->get_shader_program(), "light_color");
+	int color_loc = glGetUniformLocation(this->shader->get_shader_program(), "light_color");
 	glUniform3fv(color_loc, 1, glm::value_ptr(this->color));
 	
 	glBindVertexArray(this->VAO);

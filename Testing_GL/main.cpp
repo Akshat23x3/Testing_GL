@@ -5,16 +5,6 @@
 #include "Light.h"
 
 
-
-/*GLfloat vertices[] =
-{
-	//Position			color               Texture Coordinates
-	0.5f, 0.5f, 0.0f,   1.0f, 0.0f, 0.0f,	1.0f, 1.0f, //Top Right
-	0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // Bottom Right
-	-0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,	0.0f, 0.0f, //Bottom Left
-	-0.5f, 0.5f, 0.0f,  1.0f, 0.0f, 1.0f,   0.0f, 1.0f
-};*/
-
 glm::vec3 cubePositions[] =
 {
     glm::vec3(0.0f, 0.0f, -3.0f),
@@ -36,7 +26,7 @@ struct Last_MousePos
 }lastMPOS;
 
  // use with Perspective Projection
-GLfloat vertices[] = {
+const GLfloat vertices[] = {
     -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
     0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
@@ -127,7 +117,8 @@ void Application::Begin()
 	shader = new Shader_Object(shader_file->vertex_source, shader_file->fragment_source);
 	texture = CreateObjectComponent<Textures>();
 	transform = CreateObjectComponent<Transformations>();
-    light = CreateObjectComponent<Light>();
+
+    light = new Light();
 
 	shader->compile_shaders();
 
@@ -151,12 +142,10 @@ void Application::Begin()
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
 	glEnableVertexAttribArray(2);
 
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
 	glBindVertexArray(0); 
 
     //Light
-    light->Initiate_Light_Source(vertices);
+    light->Initiate_Light_Source();
 
 	texture->Load_Texture("Data/Textures/container.png");
 }
@@ -164,8 +153,6 @@ void Application::Begin()
 void Application::run()
 {
     EngineCamera->ProcessMovement(deltaTime);
-
-    light->Use(transform);
 
     //Texture Rendering
     texture->Render(shader->get_shader_program());
@@ -186,6 +173,8 @@ void Application::run()
     }
     
     glBindVertexArray(0);
+
+    light->Use();
 }
 
 Application::~Application()
@@ -198,7 +187,7 @@ Application::~Application()
     delete shader;
     delete texture;
     delete transform;
-    delete light;
+    //delete light;
 
 }
 
