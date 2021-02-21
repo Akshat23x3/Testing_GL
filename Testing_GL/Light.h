@@ -70,6 +70,7 @@ void Light::Initiate_Light_Source(const GLfloat* vertices)
 	glEnableVertexAttribArray(0);
 
 	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void Light::Use(Transformations* transform)
