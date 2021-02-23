@@ -48,4 +48,5 @@ public:
 	virtual glm::vec3 Get_Position() { return this->Position; }
 	virtual glm::vec3 Get_Rotation() { return this->Rotation; }
 	virtual glm::vec3 Get_Scale() { return this->Scale; }
+	virtual glm::mat4 Get_Model_Matrix() { return this->model; }
 };

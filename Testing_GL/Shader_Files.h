@@ -11,14 +11,20 @@ public:
 
 	layout(location = 0) in vec3 position;
 	layout(location = 2) in vec3 texcoord;
+	layout(location = 1) in vec3 normal;
 
 	out vec2 tex_coord;
+	out vec3 Normal;
+	out vec3 Fragpos;
 
 	uniform mat4 MVP;
+	uniform mat4 model;
 		
 	void main()
 	{
 		gl_Position = MVP * vec4(position, 1.0);
+		Fragpos = vec3(model * vec4(position, 1.0f));
+		Normal = mat3(transpose(inverse(model))) * normal;
 		tex_coord = vec2(texcoord.x, 1.0 - texcoord.y);
 	}
 	)";
@@ -28,15 +34,59 @@ public:
 	#version 460 core
 	
 	in vec2 tex_coord;
+	in vec3 Normal;
+	in vec3 Fragpos;
+	
 	out vec4 color;
 
-	//uniform vec3 light_color;
+	struct Light_Features
+	{
+		float power;
+		float shininess;
+	};
+	
+	struct Light
+	{
+		float strength;
+		vec3 normal;
+		vec3 direction;
+		vec3 reflectdir;
+		vec3 viewdir;
+		vec3 light;
+	};
 
+	struct Material
+	{
+		Light ambient;
+		Light diffuse;
+		Light specular;
+	}material;
+
+	uniform vec3 light_color;
 	uniform sampler2D Texture;
+	uniform vec3 lightpos;
+	uniform vec3 viewpos;
+	uniform Light_Features light;
 	
 	void main()
 	{
-		color = texture(Texture, tex_coord);
+		//Ambient Lighting
+		material.ambient.strength = light.power;
+		material.ambient.light = material.ambient.strength * light_color;
+
+		//Diffuse Lighting
+		material.diffuse.normal = normalize(Normal);
+		material.diffuse.direction = normalize(lightpos - Fragpos);
+		material.diffuse.strength = max(dot(material.diffuse.normal, material.diffuse.direction), 0.0);
+		material.diffuse.light = material.diffuse.strength * light_color;
+
+		//Specular Lighting
+		material.specular.viewdir = normalize(viewpos - Fragpos);
+		material.specular.reflectdir = reflect(-material.diffuse.direction, material.diffuse.normal);
+		material.specular.strength = pow(max(dot(material.specular.viewdir, material.specular.reflectdir), 0.0f), 32);
+		material.specular.light = light.shininess * material.specular.strength * light_color;
+
+		color = vec4((material.ambient.light + material.diffuse.light + material.specular.light) * vec3(texture(Texture, tex_coord)), 1.0f);
 	}
 	)";
 

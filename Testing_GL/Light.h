@@ -10,6 +10,8 @@ protected:
 	glm::vec3 position = glm::vec3(1.2f, 1.0f, 2.0f);
 
 public:
+	float power = 0.2f;
+	float shininess = 1.5f;
 
 	//Constructors
 	Light(glm::vec3 color, glm::vec3 direction, glm::vec3 position);
@@ -127,12 +129,17 @@ void Light::Use()
 	int transform_loc = glGetUniformLocation(this->shader->get_shader_program(), "MVP");
 	glUniformMatrix4fv(transform_loc, 1, GL_FALSE, glm::value_ptr(transform->Project_On_Screen()));
 
+	int model_loc = glGetUniformLocation(this->shader->get_shader_program(), "model");
+	glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(transform->Get_Model_Matrix()));
+
 	int color_loc = glGetUniformLocation(this->shader->get_shader_program(), "light_color");
 	glUniform3fv(color_loc, 1, glm::value_ptr(this->color));
 	
 	glBindVertexArray(this->VAO);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindVertexArray(0);
+
+	delete transform;
 }
 
 Light::~Light()
@@ -141,3 +148,21 @@ Light::~Light()
 	glDeleteBuffers(1, &VBO);
 	glDeleteProgram(shader->get_shader_program());
 }
+
+//Direction Light
+class DirectionLight : public Light
+{
+
+};
+
+//Point Light
+class PointLight : public Light
+{
+
+};
+
+//Spot Light
+class SpotLight : public Light
+{
+
+};
