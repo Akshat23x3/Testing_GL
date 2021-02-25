@@ -29,6 +29,12 @@ protected:
 	glm::vec3 right = glm::cross(this->forward, this->camera_features->WorldUp);
 
 public:
+
+	CameraComponent()
+	{
+		this->UpdateCameraVectors();
+	}
+
 	void SetPosition(glm::vec3 position) { this->position = position; }
 	glm::vec3 GetPosition() { return this->position; }
 	glm::vec3 GetForwardVector() { return this->forward; }
@@ -56,7 +62,7 @@ void CameraComponent::UpdateCameraVectors()
 
 	this->forward = glm::normalize(forward);
 	this->right = glm::normalize(glm::cross(this->forward, this->camera_features->WorldUp));
-	this->Up = glm::normalize(glm::cross(this->forward, this->right));
+	this->Up = glm::normalize(glm::cross(this->right, this->forward));
 }
 
 void CameraComponent::ProcessKeyBoardMovement(Movement direction, GLfloat deltaTime)
@@ -74,12 +80,12 @@ void CameraComponent::ProcessKeyBoardMovement(Movement direction, GLfloat deltaT
 
 	if (Movement::RIGHT == direction)
 	{
-		this->position += glm::cross(this->forward, this->Up) * velocity;
+		this->position += this->right * velocity;
 	}
 
 	if (Movement::LEFT == direction)
 	{
-		this->position -= glm::cross(this->forward, this->Up) * velocity;
+		this->position -= this->right * velocity;
 	}
 }
 
@@ -88,8 +94,8 @@ void CameraComponent::ProcessMouseMovement(GLfloat xOffset, GLfloat yOffset, GLb
 	xOffset *= this->camera_features->SENSTIVITY;
 	yOffset *= this->camera_features->SENSTIVITY;
 
-	this->camera_features->YAW += xOffset;
-	this->camera_features->PITCH += yOffset;
+	this->camera_features->YAW -= xOffset;
+	this->camera_features->PITCH -= yOffset;
 
 	if (constrainPitch)
 	{

@@ -3,7 +3,7 @@
 #include "Transformations_Projections.h"
 #include "Textures.h"
 #include "Light.h"
-
+#include <vector>
 
 glm::vec3 cubePositions[] =
 {
@@ -76,7 +76,8 @@ class Application : public GL_GRAPHICS
 	Shader_Object* shader = 0;
 	Textures* texture = 0;
 	Transformations* transform = 0;
-    Light* light = 0; 
+    SpotLight* light = 0;
+    std::vector<const char*> texture_files;
 
 	GLuint VBO = 0, VAO = 0;
 	//GLuint EBO = 0;
@@ -119,7 +120,7 @@ void Application::Begin()
 	texture = CreateObjectComponent<Textures>();
 	transform = CreateObjectComponent<Transformations>();
 
-    light = new Light();
+    light = new SpotLight();
 
 	shader->compile_shaders();
 
@@ -143,28 +144,26 @@ void Application::Begin()
 
     //Light
     light->Initiate_Light_Source();
-
-	texture->Load_Texture("Data/Textures/container.png");
+    texture_files.push_back("Data/Textures/container.png");
+    texture_files.push_back("Data/Textures/container_specular.png");
+    //texture_files.push_back("Data/Textures/container_specular_1.png");
+    for(auto &texture_file : texture_files)
+        texture->Load_Texture(texture_file);
 }
 
 void Application::run()
 {
     EngineCamera->ProcessMovement(deltaTime);
-
-    //Texture Rendering
-    texture->Render(shader->get_shader_program());
     
     glUseProgram(shader->get_shader_program());
-
-    int light_power_loc = glGetUniformLocation(shader->get_shader_program(), "light.power");
-    glUniform1f(light_power_loc, light->power);
-
-    int light_shininess_loc = glGetUniformLocation(shader->get_shader_program(), "light.shininess");
-    glUniform1f(light_shininess_loc, light->shininess);
 
     glBindVertexArray(VAO);
     for (int i = 0; i < 10; i++)
     {
+        light->SetPosition(EngineCamera->GetPosition());
+        //Texture Rendering
+        texture->Render(shader->get_shader_program());
+
         transform->Set_Position(cubePositions[i]);
         glm::vec3 Rotation_angle(20.0f * i);
         transform->Set_Rotation(Rotation_angle);
@@ -174,9 +173,6 @@ void Application::run()
 
         int model_loc = glGetUniformLocation(shader->get_shader_program(), "model");
         glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(transform->Get_Model_Matrix()));
-
-        int light_color_loc = glGetUniformLocation(shader->get_shader_program(), "light_color");
-        glUniform3fv(light_color_loc, 1, glm::value_ptr(light->GetColor()));
 
         int lightpos_loc = glGetUniformLocation(shader->get_shader_program(), "lightpos");
         glUniform3fv(lightpos_loc, 1, glm::value_ptr(light->GetPosition()));
@@ -188,8 +184,10 @@ void Application::run()
     }
     
     glBindVertexArray(0);
-
-    light->Use();
+    
+    // glm::vec3 position = light->GetPosition();
+    //position.z -= 0.5f * deltaTime;
+    light->Use(shader, false);
 }
 
 Application::~Application()
