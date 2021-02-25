@@ -76,7 +76,7 @@ class Application : public GL_GRAPHICS
 	Shader_Object* shader = 0;
 	Textures* texture = 0;
 	Transformations* transform = 0;
-    SpotLight* light = 0;
+    PointLight* light = 0;
     std::vector<const char*> texture_files;
 
 	GLuint VBO = 0, VAO = 0;
@@ -120,7 +120,7 @@ void Application::Begin()
 	texture = CreateObjectComponent<Textures>();
 	transform = CreateObjectComponent<Transformations>();
 
-    light = new SpotLight();
+    light = new PointLight();
 
 	shader->compile_shaders();
 
@@ -160,7 +160,7 @@ void Application::run()
     glBindVertexArray(VAO);
     for (int i = 0; i < 10; i++)
     {
-        light->SetPosition(EngineCamera->GetPosition());
+        //light->SetPosition(EngineCamera->GetPosition());
         //Texture Rendering
         texture->Render(shader->get_shader_program());
 
@@ -185,9 +185,10 @@ void Application::run()
     
     glBindVertexArray(0);
     
-    // glm::vec3 position = light->GetPosition();
-    //position.z -= 0.5f * deltaTime;
-    light->Use(shader, false);
+    glm::vec3 position = light->GetPosition();
+    position.z -= 0.5f * deltaTime;
+    light->SetPosition(position);
+    light->Use(shader, true);
 }
 
 Application::~Application()
