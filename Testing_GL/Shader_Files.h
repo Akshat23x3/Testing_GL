@@ -33,6 +33,8 @@ public:
 
 	#version 460 core
 	
+	//#define lights 2
+
 	in vec2 tex_coord;
 	in vec3 Normal;
 	in vec3 Fragpos;
@@ -49,20 +51,48 @@ public:
 		vec3 light;
 	};
 
-	struct Light_Features
-	{
-		Light ambient;
-		Light diffuse;
-		Light specular;
-	};
-
 	struct Material
 	{
 		sampler2D diffuse;
 		sampler2D specular;
 	};
 
-	struct LightColor
+	struct LightFeatures
+	{
+		vec3 diffuse;
+		vec3 ambient;
+		vec3 specular;
+	};
+
+	struct ExecutingLight
+	{
+		Light ambient;
+		Light diffuse;
+		Light specular;
+	};
+
+	struct DirectionalLight
+	{	
+		float power;
+		int shininess;
+		
+		vec3 direction;
+	};
+
+	struct PointLight
+	{	
+		//Point Light
+		float constant;
+		float linear;
+		float quadratic;
+
+		vec3 position;
+
+		float power;
+		int shininess;
+	};
+
+	struct SpotLight
 	{	
 		//Point Light
 		float constant;
@@ -74,55 +104,119 @@ public:
 		float outerCutOff;
 		vec3 direction;
 
+		vec3 position;
+
 		float power;
 		int shininess;
-		
-		vec3 diffuse;
-		vec3 ambient;
-		vec3 specular;
 	};
 
-	uniform LightColor light_color;
-	uniform vec3 lightpos;
 	uniform vec3 viewpos;
-	uniform Material material;
-	
-	void main()
+	uniform Material material;	
+	uniform int lights;
+
+	uniform LightFeatures light_feature;
+	uniform DirectionalLight directional_light;
+	uniform PointLight point_light[50];
+	uniform SpotLight spot_light;
+
+	vec3 CalDirectionalLight(DirectionalLight directional_light)
 	{
-		Light_Features light;
-
+		ExecutingLight light;
 		//Ambient Lighting
-		light.ambient.strength = light_color.power;
-		light.ambient.light = light.ambient.strength * light_color.ambient * vec3(texture(material.diffuse, tex_coord));
-
+		light.ambient.strength = directional_light.power;
+		light.ambient.light = light.ambient.strength * light_feature.ambient * vec3(texture(material.diffuse, tex_coord));
+	 
 		//Diffuse Lighting
 		light.diffuse.normal = normalize(Normal);
-		light.diffuse.direction = normalize(lightpos - Fragpos);
 		light.diffuse.strength = max(dot(light.diffuse.normal, light.diffuse.direction), 0.0);
-		light.diffuse.light = light.diffuse.strength * light_color.diffuse * vec3(texture(material.diffuse, tex_coord));
+		light.diffuse.light = light.diffuse.strength * light_feature.diffuse * vec3(texture(material.diffuse, tex_coord));				 
+
+		//Spescular Lighting
+		light.specular.viewdir = normalize(viewpos - Fragpos);
+		light.specular.reflectdir = reflect(-light.diffuse.direction, light.diffuse.normal);
+		light.specular.strength = pow(max(dot(light.specular.viewdir, light.specular.reflectdir), 0.0f), directional_light.shininess);
+		light.specular.light = light.specular.strength * light_feature.specular * vec3(texture(material.specular, tex_coord));
+
+		return (light.ambient.light + light.diffuse.light + light.specular.light);
+	}
+
+	vec3 CalPointLight(PointLight point_light)
+	{
+		ExecutingLight light;
+		//Ambient Lighting
+		light.ambient.strength = point_light.power;
+		light.ambient.light = light.ambient.strength * light_feature.ambient * vec3(texture(material.diffuse, tex_coord));
+	 
+		//Diffuse Lighting
+		light.diffuse.normal = normalize(Normal);
+		light.diffuse.direction = normalize(point_light.position - Fragpos);
+		light.diffuse.strength = max(dot(light.diffuse.normal, light.diffuse.direction), 0.0);
+		light.diffuse.light = light.diffuse.strength * light_feature.diffuse * vec3(texture(material.diffuse, tex_coord));				 
 
 		//Specular Lighting
 		light.specular.viewdir = normalize(viewpos - Fragpos);
 		light.specular.reflectdir = reflect(-light.diffuse.direction, light.diffuse.normal);
-		light.specular.strength = pow(max(dot(light.specular.viewdir, light.specular.reflectdir), 0.0f), light_color.shininess);
-		light.specular.light = light.specular.strength * light_color.specular * vec3(texture(material.specular, tex_coord));
-		
-		//SpotLight
-		/*float theta = dot(light.diffuse.direction, normalize(-light_color.direction));
-		float epsilon = light_color.cutOff - light_color.outerCutOff;
-		float intensity = clamp((theta - light_color.outerCutOff) / epsilon, 0.0f, 1.0f);
-		light.diffuse.light  *= intensity;
-		light.specular.light *= intensity;*/
+		light.specular.strength = pow(max(dot(light.specular.viewdir, light.specular.reflectdir), 0.0f), point_light.shininess);
+		light.specular.light = light.specular.strength * light_feature.specular * vec3(texture(material.specular, tex_coord));
 
 		//Point Light
-		float distance = length(lightpos - Fragpos);
-		float attenuation = 1.0f / (light_color.constant + (light_color.linear * distance) + (light_color.quadratic * (distance * distance)));
+		float distance = length(point_light.position - Fragpos);
+		float attenuation = 1.0f / (point_light.constant + (point_light.linear * distance) + (point_light.quadratic * (distance * distance)));
 
 		light.ambient.light *= attenuation;
 		light.diffuse.light *= attenuation;
 		light.specular.light *= attenuation;
 
-		color = vec4(light.ambient.light + light.diffuse.light + light.specular.light, 1.0f);
+		return (light.ambient.light + light.diffuse.light + light.specular.light);
+	}
+
+	vec3 CalSpotLight(SpotLight spot_light)
+	{
+		ExecutingLight light;
+		//Ambient Lighting
+		light.ambient.strength = spot_light.power;
+		light.ambient.light = light.ambient.strength * light_feature.ambient * vec3(texture(material.diffuse, tex_coord));
+	 
+		//Diffuse Lighting
+		light.diffuse.normal = normalize(Normal);
+		light.diffuse.direction = normalize(spot_light.position - Fragpos);
+		light.diffuse.strength = max(dot(light.diffuse.normal, light.diffuse.direction), 0.0);
+		light.diffuse.light = light.diffuse.strength * light_feature.diffuse * vec3(texture(material.diffuse, tex_coord));				 
+
+		//Specular Lighting
+		light.specular.viewdir = normalize(viewpos - Fragpos);
+		light.specular.reflectdir = reflect(-light.diffuse.direction, light.diffuse.normal);
+		light.specular.strength = pow(max(dot(light.specular.viewdir, light.specular.reflectdir), 0.0f), spot_light.shininess);
+		light.specular.light = light.specular.strength * light_feature.specular * vec3(texture(material.specular, tex_coord));
+
+		//Point Light
+		float distance = length(spot_light.position - Fragpos);
+		float attenuation = 1.0f / (spot_light.constant + (spot_light.linear * distance) + (spot_light.quadratic * (distance * distance)));
+
+		light.ambient.light *= attenuation;
+		light.diffuse.light *= attenuation;
+		light.specular.light *= attenuation;
+
+		//SpotLight
+		float theta = dot(light.diffuse.direction, normalize(-spot_light.direction));
+		float epsilon = spot_light.cutOff - spot_light.outerCutOff;
+		float intensity = clamp((theta - spot_light.outerCutOff) / epsilon, 0.0f, 1.0f);
+		light.diffuse.light  *= intensity;
+		light.specular.light *= intensity;
+
+		return (light.ambient.light + light.diffuse.light + light.specular.light);
+	}
+	
+	void main()
+	{
+		vec3 result = vec3(0.0f);
+		result += CalDirectionalLight(directional_light);
+		for(int i = 0;i < lights;i++)
+		{
+			result += CalPointLight(point_light[i]);
+		}
+		//result += CalSpotLight(spot_light);
+		color = vec4(result, 1.0f);
 	}
 	)";
 

@@ -35,14 +35,14 @@ public:
 
 	void Render(GLuint shader)
 	{
-		int light_color_loc = glGetUniformLocation(shader, "light_color.ambient");
-		glUniform3fv(light_color_loc, 1, glm::value_ptr(ambient_color));
+		int light_feature_loc = glGetUniformLocation(shader, "light_feature.ambient");
+		glUniform3fv(light_feature_loc, 1, glm::value_ptr(ambient_color));
 
-		light_color_loc = glGetUniformLocation(shader, "light_color.diffuse");
-		glUniform3fv(light_color_loc, 1, glm::value_ptr(diffuse_color));
+		light_feature_loc = glGetUniformLocation(shader, "light_feature.diffuse");
+		glUniform3fv(light_feature_loc, 1, glm::value_ptr(diffuse_color));
 
-		light_color_loc = glGetUniformLocation(shader, "light_color.specular");
-		glUniform3fv(light_color_loc, 1, glm::value_ptr(specular_color));
+		light_feature_loc = glGetUniformLocation(shader, "light_feature.specular");
+		glUniform3fv(light_feature_loc, 1, glm::value_ptr(specular_color));
 
 		glEnable(GL_TEXTURE_2D);
 		for (int i = 0; i < textures_loaded; i++)

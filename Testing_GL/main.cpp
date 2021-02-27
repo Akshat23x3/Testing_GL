@@ -76,7 +76,9 @@ class Application : public GL_GRAPHICS
 	Shader_Object* shader = 0;
 	Textures* texture = 0;
 	Transformations* transform = 0;
-    PointLight* light = 0;
+    std::vector<PointLight> point_lights;
+    DirectionalLight* Global_lighting = 0;
+    LIGHT_SHADER* light_shader = 0;
     std::vector<const char*> texture_files;
 
 	GLuint VBO = 0, VAO = 0;
@@ -120,8 +122,6 @@ void Application::Begin()
 	texture = CreateObjectComponent<Textures>();
 	transform = CreateObjectComponent<Transformations>();
 
-    light = new PointLight();
-
 	shader->compile_shaders();
 
 	glGenVertexArrays(1, &VAO);
@@ -142,25 +142,35 @@ void Application::Begin()
 
 	glBindVertexArray(0); 
 
-    //Light
-    light->Initiate_Light_Source();
     texture_files.push_back("Data/Textures/container.png");
     texture_files.push_back("Data/Textures/container_specular.png");
     //texture_files.push_back("Data/Textures/container_specular_1.png");
     for(auto &texture_file : texture_files)
         texture->Load_Texture(texture_file);
+
+    //Light
+    light_shader = CreateObjectComponent<LIGHT_SHADER>();
+    Global_lighting = CreateObjectComponent<DirectionalLight>();
+    Global_lighting->power = 0.2f;
+    for (int i = 0; i < 2; i++)
+    {
+        point_lights.push_back(PointLight());
+        if (i == 1)
+            point_lights[i].SetPosition(glm::vec3(-3.0f));
+    }
 }
+
 
 void Application::run()
 {
     EngineCamera->ProcessMovement(deltaTime);
-    
-    glUseProgram(shader->get_shader_program());
 
     glBindVertexArray(VAO);
+    glUseProgram(shader->get_shader_program());
+    
+
     for (int i = 0; i < 10; i++)
     {
-        //light->SetPosition(EngineCamera->GetPosition());
         //Texture Rendering
         texture->Render(shader->get_shader_program());
 
@@ -174,21 +184,18 @@ void Application::run()
         int model_loc = glGetUniformLocation(shader->get_shader_program(), "model");
         glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(transform->Get_Model_Matrix()));
 
-        int lightpos_loc = glGetUniformLocation(shader->get_shader_program(), "lightpos");
-        glUniform3fv(lightpos_loc, 1, glm::value_ptr(light->GetPosition()));
-
         int camerapos_loc = glGetUniformLocation(shader->get_shader_program(), "viewpos");
         glUniform3fv(camerapos_loc, 1, glm::value_ptr(EngineCamera->GetPosition()));
        
         glDrawArrays(GL_TRIANGLES, 0, 36);
     }
-    
-    glBindVertexArray(0);
-    
-    glm::vec3 position = light->GetPosition();
+
+    //glBindVertexArray(0);
+
+    glm::vec3 position = point_lights[1].GetPosition();
     position.z -= 0.5f * deltaTime;
-    light->SetPosition(position);
-    light->Use(shader, true);
+    point_lights[1].SetPosition(position);
+    light_shader->Use(*Global_lighting, point_lights, SpotLight(), shader);
 }
 
 Application::~Application()
@@ -201,7 +208,7 @@ Application::~Application()
     delete shader;
     delete texture;
     delete transform;
-    //delete light;
+    delete light_shader;
 
 }
 
