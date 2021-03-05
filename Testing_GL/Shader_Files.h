@@ -25,7 +25,7 @@ public:
 		gl_Position = MVP * vec4(position, 1.0);
 		Fragpos = vec3(model * vec4(position, 1.0f));
 		Normal = mat3(transpose(inverse(model))) * normal;
-		tex_coord = vec2(texcoord.x, 1.0 - texcoord.y);
+		tex_coord = vec2(texcoord.x, texcoord.y);
 	}
 	)";
 
@@ -55,6 +55,7 @@ public:
 	{
 		sampler2D diffuse;
 		sampler2D specular;
+		int shininess;
 	};
 
 	struct LightFeatures
@@ -74,7 +75,6 @@ public:
 	struct DirectionalLight
 	{	
 		float power;
-		int shininess;
 		
 		vec3 direction;
 	};
@@ -89,7 +89,6 @@ public:
 		vec3 position;
 
 		float power;
-		int shininess;
 	};
 
 	struct SpotLight
@@ -107,7 +106,6 @@ public:
 		vec3 position;
 
 		float power;
-		int shininess;
 	};
 
 	uniform vec3 viewpos;
@@ -134,7 +132,7 @@ public:
 		//Spescular Lighting
 		light.specular.viewdir = normalize(viewpos - Fragpos);
 		light.specular.reflectdir = reflect(-light.diffuse.direction, light.diffuse.normal);
-		light.specular.strength = pow(max(dot(light.specular.viewdir, light.specular.reflectdir), 0.0f), directional_light.shininess);
+		light.specular.strength = pow(max(dot(light.specular.viewdir, light.specular.reflectdir), 0.0f), material.shininess);
 		light.specular.light = light.specular.strength * light_feature.specular * vec3(texture(material.specular, tex_coord));
 
 		return (light.ambient.light + light.diffuse.light + light.specular.light);
@@ -156,7 +154,7 @@ public:
 		//Specular Lighting
 		light.specular.viewdir = normalize(viewpos - Fragpos);
 		light.specular.reflectdir = reflect(-light.diffuse.direction, light.diffuse.normal);
-		light.specular.strength = pow(max(dot(light.specular.viewdir, light.specular.reflectdir), 0.0f), point_light.shininess);
+		light.specular.strength = pow(max(dot(light.specular.viewdir, light.specular.reflectdir), 0.0f), material.shininess);
 		light.specular.light = light.specular.strength * light_feature.specular * vec3(texture(material.specular, tex_coord));
 
 		//Point Light
@@ -186,7 +184,7 @@ public:
 		//Specular Lighting
 		light.specular.viewdir = normalize(viewpos - Fragpos);
 		light.specular.reflectdir = reflect(-light.diffuse.direction, light.diffuse.normal);
-		light.specular.strength = pow(max(dot(light.specular.viewdir, light.specular.reflectdir), 0.0f), spot_light.shininess);
+		light.specular.strength = pow(max(dot(light.specular.viewdir, light.specular.reflectdir), 0.0f), material.shininess);
 		light.specular.light = light.specular.strength * light_feature.specular * vec3(texture(material.specular, tex_coord));
 
 		//Point Light

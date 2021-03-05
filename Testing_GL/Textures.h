@@ -2,6 +2,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "SOIL2/SOIL2.h"
 
+/*
 class Textures
 {
 	int width = 0, height = 0;
@@ -54,6 +55,63 @@ public:
 			else
 				glUniform1i(glGetUniformLocation(shader, "material.specular"), i);
 		}
+	}
+
+	//GLuint* get_ID() { return Textire_ID; }
+};*/
+
+
+class Textures
+{
+protected:
+	int width = 0, height = 0;
+
+public:
+	GLuint Texture_ID = 0;
+	std::string type;
+	aiString path;
+	GLuint GetTextureID() { return Texture_ID; }
+
+	GLuint Load_Texture(const char* texture_file_path)
+	{
+		glGenTextures(1, &Texture_ID);
+		glBindTexture(GL_TEXTURE_2D, Texture_ID);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+
+		unsigned char* image = SOIL_load_image(texture_file_path, &width, &height, 0, SOIL_LOAD_RGBA);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+
+		glGenerateMipmap(GL_TEXTURE_2D);
+		SOIL_free_image_data(image);
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		return Texture_ID;
+	}
+
+	GLuint Load_Texture(const char* path, std::string directory)
+	{
+		const std::string texture_file_path = directory + '/' + path;
+		glGenTextures(1, &Texture_ID);
+		glBindTexture(GL_TEXTURE_2D, Texture_ID);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+
+		unsigned char* image = SOIL_load_image(texture_file_path.c_str(), &width, &height, 0, SOIL_LOAD_RGBA);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+
+		glGenerateMipmap(GL_TEXTURE_2D);
+		SOIL_free_image_data(image);
+		glBindTexture(GL_TEXTURE_2D, 0);
+		
+		return Texture_ID;
+
 	}
 
 	//GLuint* get_ID() { return Textire_ID; }

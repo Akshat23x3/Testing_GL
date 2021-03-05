@@ -1,8 +1,8 @@
 #include "Shader_Object.h"
 #include "My_GL.h"
 #include "Transformations_Projections.h"
-#include "Textures.h"
 #include "Light.h"
+#include "ModelLoading.h"
 #include <vector>
 
 glm::vec3 cubePositions[] =
@@ -74,14 +74,11 @@ const GLfloat vertices[] = {
 class Application : public GL_GRAPHICS
 {
 	Shader_Object* shader = 0;
-	Textures* texture = 0;
 	Transformations* transform = 0;
     std::vector<PointLight> point_lights;
     DirectionalLight* Global_lighting = 0;
     LIGHT_SHADER* light_shader = 0;
-    std::vector<const char*> texture_files;
-
-	GLuint VBO = 0, VAO = 0;
+    Model* model = 0;
 	//GLuint EBO = 0;
 public:
 
@@ -114,42 +111,20 @@ void Application::Begin()
 	//Setting GL_SETTINGS AND OPTIONS
 	this->set_GL_options();
 
-    //Shader_Files Initiating
+    //Shader_Files Initiatings
     SHADER_SOURCE_FILES* shader_file = CreateObjectComponent<SHADER_SOURCE_FILES>();
 
 	// Objects
 	shader = new Shader_Object(shader_file->vertex_source, shader_file->fragment_source);
-	texture = CreateObjectComponent<Textures>();
 	transform = CreateObjectComponent<Transformations>();
 
 	shader->compile_shaders();
 
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glBindVertexArray(VAO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
-	glEnableVertexAttribArray(0);
-
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(1);
-
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(2);
-
-	glBindVertexArray(0); 
-
-    texture_files.push_back("Data/Textures/container.png");
-    texture_files.push_back("Data/Textures/container_specular.png");
-    //texture_files.push_back("Data/Textures/container_specular_1.png");
-    for(auto &texture_file : texture_files)
-        texture->Load_Texture(texture_file);
+    model = new Model("Data/models/nanosuit.obj");
 
     //Light
     light_shader = CreateObjectComponent<LIGHT_SHADER>();
+    light_shader->Initiate_Shader();
     Global_lighting = CreateObjectComponent<DirectionalLight>();
     Global_lighting->power = 0.2f;
     for (int i = 0; i < 2; i++)
@@ -164,49 +139,28 @@ void Application::Begin()
 void Application::run()
 {
     EngineCamera->ProcessMovement(deltaTime);
-
-    glBindVertexArray(VAO);
-    glUseProgram(shader->get_shader_program());
-    
-
-    for (int i = 0; i < 10; i++)
-    {
-        //Texture Rendering
-        texture->Render(shader->get_shader_program());
-
-        transform->Set_Position(cubePositions[i]);
-        glm::vec3 Rotation_angle(20.0f * i);
-        transform->Set_Rotation(Rotation_angle);
-
-        int transform_loc = glGetUniformLocation(shader->get_shader_program(), "MVP");
-        glUniformMatrix4fv(transform_loc, 1, GL_FALSE, glm::value_ptr(transform->Project_On_Screen()));
-
-        int model_loc = glGetUniformLocation(shader->get_shader_program(), "model");
-        glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(transform->Get_Model_Matrix()));
-
-        int camerapos_loc = glGetUniformLocation(shader->get_shader_program(), "viewpos");
-        glUniform3fv(camerapos_loc, 1, glm::value_ptr(EngineCamera->GetPosition()));
-       
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-    }
-
-    //glBindVertexArray(0);
-
+    Global_lighting->power = 5.0f;
     glm::vec3 position = point_lights[1].GetPosition();
     position.z -= 0.5f * deltaTime;
     point_lights[1].SetPosition(position);
+
+    transform->Set_Scale(glm::vec3(0.1f));
+    transform->Set_Position(glm::vec3(0.0f, -2.0f, -2.0f));
+
+    glUseProgram(shader->get_shader_program());
+
+    model->Draw(shader, transform);
+
     light_shader->Use(*Global_lighting, point_lights, SpotLight(), shader);
 }
 
 Application::~Application()
 {
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
+
 	//glDeleteBuffers(1, &EBO);
 	glDeleteProgram(shader->get_shader_program());
 
     delete shader;
-    delete texture;
     delete transform;
     delete light_shader;
 

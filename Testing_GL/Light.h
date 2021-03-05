@@ -77,7 +77,7 @@ public:
 	Shader_Object* GetShader() { return this->shader; }
 
 	//Execution 
-	void Initiate_Light_Source();
+	void Initiate_Shader();
 
 	//Rendering
 	void Use(DirectionalLight dirlight, std::vector<PointLight> pointlights, SpotLight spotlight, Shader_Object* shader, bool Render);
@@ -95,7 +95,7 @@ LIGHT_SHADER::LIGHT_SHADER()
 	shader->compile_shaders();
 }
 
-void LIGHT_SHADER::Initiate_Light_Source()
+void LIGHT_SHADER::Initiate_Shader()
 {
 	const GLfloat vertices[] = {
 	-0.5f, -0.5f, -0.5f,
@@ -161,8 +161,6 @@ void LIGHT_SHADER::compile_directional_light(DirectionalLight light, Shader_Obje
 	int light_power_loc = glGetUniformLocation(shader->get_shader_program(), "directional_light.power");
 	glUniform1f(light_power_loc, light.power);
 
-	int light_shininess_loc = glGetUniformLocation(shader->get_shader_program(), "directional_light.shininess");
-	glUniform1i(light_shininess_loc, light.shininess);
 
 	int light_direction_loc = glGetUniformLocation(shader->get_shader_program(), "directional_light.direction");
 	glUniform3fv(light_direction_loc, 1, glm::value_ptr(light.GetDirection()));
@@ -172,9 +170,6 @@ void LIGHT_SHADER::compile_spot_light(SpotLight light, Shader_Object* shader)
 {
 	int floaters = glGetUniformLocation(shader->get_shader_program(), "spot_light.power");
 	glUniform1f(floaters, light.power);
-
-	floaters = glGetUniformLocation(shader->get_shader_program(), "spot_light.shininess");
-	glUniform1i(floaters, light.shininess);
 
 	floaters = glGetUniformLocation(shader->get_shader_program(), "spot_light.constant");
 	glUniform1f(floaters, light.constant);
@@ -206,10 +201,6 @@ void LIGHT_SHADER::compile_point_light(std::vector<PointLight> lights, Shader_Ob
 		std::string result = str + std::to_string(i).c_str() + "].power";
 		int floaters = glGetUniformLocation(shader->get_shader_program(), result.c_str());
 		glUniform1f(floaters, lights[i].power);
-
-		result = str + std::to_string(i).c_str() + "].shininess";
-		floaters = glGetUniformLocation(shader->get_shader_program(), result.c_str());
-		glUniform1i(floaters, lights[i].shininess);
 
 		result = str + std::to_string(i).c_str() + "].constant";
 		floaters = glGetUniformLocation(shader->get_shader_program(), result.c_str());

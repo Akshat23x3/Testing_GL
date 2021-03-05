@@ -76,12 +76,12 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\C++ GAMES\Testing_GL\Dependencies\SOIL2\include;D:\C++ GAMES\Testing_GL\Dependencies\GLM\glm;D:\C++ GAMES\Testing_GL\Dependencies\GLEW\include;D:\C++ GAMES\Testing_GL\Dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\C++ GAMES\Testing_GL\Dependencies\ASSIMP\include;D:\C++ GAMES\Testing_GL\Dependencies\SOIL2\include;D:\C++ GAMES\Testing_GL\Dependencies\GLM\glm;D:\C++ GAMES\Testing_GL\Dependencies\GLEW\include;D:\C++ GAMES\Testing_GL\Dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>D:\C++ GAMES\Testing_GL\Dependencies\SOIL2\lib;D:\C++ GAMES\Testing_GL\Dependencies\GLEW\lib\Release\Win32;D:\C++ GAMES\Testing_GL\Dependencies\GLFW\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;soil2-debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\C++ GAMES\Testing_GL\Dependencies\ASSIMP\lib;D:\C++ GAMES\Testing_GL\Dependencies\SOIL2\lib;D:\C++ GAMES\Testing_GL\Dependencies\GLEW\lib\Release\Win32;D:\C++ GAMES\Testing_GL\Dependencies\GLFW\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;soil2-debug.lib;assimp-vc141-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -106,14 +106,14 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\C++ GAMES\Testing_GL\Dependencies\SOIL2\include;D:\C++ GAMES\Testing_GL\Dependencies\GLM\glm;D:\C++ GAMES\Testing_GL\Dependencies\GLEW\include;D:\C++ GAMES\Testing_GL\Dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\C++ GAMES\Testing_GL\Dependencies\ASSIMP\include;D:\C++ GAMES\Testing_GL\Dependencies\SOIL2\include;D:\C++ GAMES\Testing_GL\Dependencies\GLM\glm;D:\C++ GAMES\Testing_GL\Dependencies\GLEW\include;D:\C++ GAMES\Testing_GL\Dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>D:\C++ GAMES\Testing_GL\Dependencies\SOIL2\lib;D:\C++ GAMES\Testing_GL\Dependencies\GLEW\lib\Release\Win32;D:\C++ GAMES\Testing_GL\Dependencies\GLFW\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;soil2-debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\C++ GAMES\Testing_GL\Dependencies\ASSIMP\lib;D:\C++ GAMES\Testing_GL\Dependencies\SOIL2\lib;D:\C++ GAMES\Testing_GL\Dependencies\GLEW\lib\Release\Win32;D:\C++ GAMES\Testing_GL\Dependencies\GLFW\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;soil2-debug.lib;assimp-vc141-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -139,6 +139,8 @@
   <ItemGroup>
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="Light.h" />
+    <ClInclude Include="MeshLoading.h" />
+    <ClInclude Include="ModelLoading.h" />
     <ClInclude Include="My_GL.h" />
     <ClInclude Include="Shader_Files.h" />
     <ClInclude Include="Shader_Object.h" />
