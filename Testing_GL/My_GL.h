@@ -37,7 +37,7 @@ int GL_GRAPHICS::intializeGraphics()
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
 	// Creating a GLFWwindow object that we can use
-	window = glfwCreateWindow(Window_Width, Window_Height, "LearnOpenGL", nullptr, nullptr);
+	window = glfwCreateWindow(Window_Width, Window_Height, "ARK GAME ENGINE", nullptr, nullptr);
 
 	int screenWidth, screenHeight;
 	glfwGetFramebufferSize(window, &screenWidth, &screenHeight);

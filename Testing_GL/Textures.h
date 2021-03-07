@@ -114,5 +114,33 @@ public:
 
 	}
 
+	GLuint Load_CubeMapTexture(std::vector<const GLchar*> faces)
+	{
+		glGenTextures(1, &Texture_ID);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, Texture_ID);
+
+		for (GLuint i = 0; i < faces.size(); i++)
+		{
+			unsigned char* image = SOIL_load_image(faces[i], &width, &height, 0, SOIL_LOAD_RGB);
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+			SOIL_free_image_data(image);
+		}
+
+		//unsigned char* image = SOIL_load_image("Data/Skyboxes/Night_Sky.png", &width, &height, 0, SOIL_LOAD_RGB);
+		//glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+		//SOIL_free_image_data(image);
+
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+
+
+
+		return Texture_ID;
+	}
+
 	//GLuint* get_ID() { return Textire_ID; }
 };

@@ -5,26 +5,33 @@ class Model
 	std::vector<Mesh> meshes;
 	std::vector<Textures> textures_loaded;
 	string directory;
+    Shader_Object* shader = 0;
 
 public:
+    Shader_Object* GetShader() { return shader; }
 
     Model(const GLchar* path)
     {
         this->loadModel(path);
+        SHADER_SOURCE_FILES* shader_file = new SHADER_SOURCE_FILES();
+        this->shader = new Shader_Object(shader_file->vertex_source, shader_file->fragment_source);
+        this->shader->compile_shaders();
     }
 
-    void Draw(Shader_Object* shader, Transformations* transform)
+    void Draw(Transformations* transform)
     {
-        int mvp_loc = glGetUniformLocation(shader->get_shader_program(), "MVP");
+        glUseProgram(this->shader->get_shader_program());
+
+        int mvp_loc = glGetUniformLocation(this->shader->get_shader_program(), "MVP");
         glUniformMatrix4fv(mvp_loc, 1, GL_FALSE, glm::value_ptr(transform->Project_On_Screen()));
-        int model_loc = glGetUniformLocation(shader->get_shader_program(), "model");
+        int model_loc = glGetUniformLocation(this->shader->get_shader_program(), "model");
         glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(transform->Get_Model_Matrix()));
-        int viewpos_loc = glGetUniformLocation(shader->get_shader_program(), "viewpos");
+        int viewpos_loc = glGetUniformLocation(this->shader->get_shader_program(), "viewpos");
         glUniformMatrix4fv(viewpos_loc, 1, GL_FALSE, glm::value_ptr(EngineCamera->GetPosition()));
 
         for (GLuint i = 0; i < this->meshes.size(); i++)
         {
-            this->meshes[i].Draw(shader);
+            this->meshes[i].Draw(this->shader);
         }
     }
 
@@ -97,11 +104,11 @@ public:
             aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
             // 1. Diffuse maps
-            vector<Textures> diffuseMaps = this->loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+            vector<Textures> diffuseMaps = this->loadMaterialTextures(material, aiTextureType_DIFFUSE, "diffuse");
             textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
             // 2. Specular maps
-            vector<Textures> specularMaps = this->loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
+            vector<Textures> specularMaps = this->loadMaterialTextures(material, aiTextureType_SPECULAR, "specular");
             textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
         }
 

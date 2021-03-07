@@ -49,4 +49,6 @@ public:
 	virtual glm::vec3 Get_Rotation() { return this->Rotation; }
 	virtual glm::vec3 Get_Scale() { return this->Scale; }
 	virtual glm::mat4 Get_Model_Matrix() { return this->model; }
+	virtual glm::mat4 Get_View_Matrix() { return EngineCamera->GetViewMatrix(); }
+	virtual glm::mat4 Get_Projection_Matrix() { return this->projection; }
 };

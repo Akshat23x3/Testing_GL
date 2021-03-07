@@ -245,6 +245,39 @@ public:
 	}
 	)";
 
+	const GLchar* cubemapping_vs = R"(
+	
+	#version 460 core
+
+	layout(location = 0) in vec3 position;
+
+	out vec3 tex_coord;
+
+	uniform mat4 projection;
+	uniform mat4 view;
+		
+	void main()
+	{
+		vec4 pos = projection * view * vec4(position, 1.0f);
+		gl_Position = pos.xyww;
+		tex_coord = position;
+	}
+	)";
+
+	const GLchar* cubemapping_fs = R"(
+	
+	#version 460 core
+	in vec3 tex_coord;
+	out vec4 color;
+
+	uniform samplerCube cube_map;
+
+	void main()
+	{
+		color = texture(cube_map, tex_coord);
+	}
+	)";
+
 	/*const GLchar** load_shader(const char* shader_file_path)
 	{
 		std::string source_code;

@@ -2,8 +2,11 @@
 #include "My_GL.h"
 #include "Transformations_Projections.h"
 #include "Light.h"
-#include "ModelLoading.h"
+#include "MeshComponent.h"
+#include "CubeMapping.h"
 #include <vector>
+
+
 
 glm::vec3 cubePositions[] =
 {
@@ -73,12 +76,12 @@ const GLfloat vertices[] = {
 
 class Application : public GL_GRAPHICS
 {
-	Shader_Object* shader = 0;
-	Transformations* transform = 0;
+    MeshComponent* meshcomp = 0;
     std::vector<PointLight> point_lights;
     DirectionalLight* Global_lighting = 0;
     LIGHT_SHADER* light_shader = 0;
     Model* model = 0;
+    CubeMapping* skybox = 0;
 	//GLuint EBO = 0;
 public:
 
@@ -114,13 +117,8 @@ void Application::Begin()
     //Shader_Files Initiatings
     SHADER_SOURCE_FILES* shader_file = CreateObjectComponent<SHADER_SOURCE_FILES>();
 
-	// Objects
-	shader = new Shader_Object(shader_file->vertex_source, shader_file->fragment_source);
-	transform = CreateObjectComponent<Transformations>();
-
-	shader->compile_shaders();
-
-    model = new Model("Data/models/nanosuit.obj");
+    meshcomp = new MeshComponent();
+    meshcomp->Load_Model("Data/models/nanosuit.obj");
 
     //Light
     light_shader = CreateObjectComponent<LIGHT_SHADER>();
@@ -130,38 +128,38 @@ void Application::Begin()
     for (int i = 0; i < 2; i++)
     {
         point_lights.push_back(PointLight());
-        if (i == 1)
-            point_lights[i].SetPosition(glm::vec3(-3.0f));
     }
+    point_lights[0].SetPosition(glm::vec3(5.0f, 0.0f, 0.0f));
+    point_lights[1].SetPosition(glm::vec3(0.0f, 0.0f, 10.0f));
+
+    //skybox = new CubeMapping("Night_Sky.png");
 }
 
 
 void Application::run()
 {
     EngineCamera->ProcessMovement(deltaTime);
-    Global_lighting->power = 5.0f;
-    glm::vec3 position = point_lights[1].GetPosition();
+    Global_lighting->power = 2.0f;
+    glm::vec3 position = point_lights[0].GetPosition();
+    position.x -= 0.5f * deltaTime;
+    point_lights[0].SetPosition(position);
+    position = point_lights[1].GetPosition();
     position.z -= 0.5f * deltaTime;
     point_lights[1].SetPosition(position);
 
-    transform->Set_Scale(glm::vec3(0.1f));
-    transform->Set_Position(glm::vec3(0.0f, -2.0f, -2.0f));
+    //skybox->Render(meshcomp);
 
-    glUseProgram(shader->get_shader_program());
+    meshcomp->Set_Scale(glm::vec3(0.1f));
+    meshcomp->Set_Position(glm::vec3(0.0f, -2.0f, -0.0f));
 
-    model->Draw(shader, transform);
+    meshcomp->Draw();
 
-    light_shader->Use(*Global_lighting, point_lights, SpotLight(), shader);
+    light_shader->Use(*Global_lighting, point_lights, SpotLight(), meshcomp->GetShader());
 }
 
 Application::~Application()
 {
-
-	//glDeleteBuffers(1, &EBO);
-	glDeleteProgram(shader->get_shader_program());
-
-    delete shader;
-    delete transform;
+    delete meshcomp;
     delete light_shader;
 
 }

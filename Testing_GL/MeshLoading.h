@@ -65,22 +65,22 @@ public:
 			}
 
 			number = ss.str();*/
-
-			glUniform1i(glGetUniformLocation(shader_program, ("material." + name).c_str()), i);
 			glBindTexture(GL_TEXTURE_2D, textures[i].GetTextureID());
+			glUniform1i(glGetUniformLocation(shader_program, ("material." + name).c_str()), i);
+
+			int light_feature_loc = glGetUniformLocation(shader_program, "light_feature.ambient");
+			glUniform3fv(light_feature_loc, 1, glm::value_ptr(ambient_color));
+
+			light_feature_loc = glGetUniformLocation(shader_program, "light_feature.diffuse");
+			glUniform3fv(light_feature_loc, 1, glm::value_ptr(diffuse_color));
+
+			light_feature_loc = glGetUniformLocation(shader_program, "light_feature.specular");
+			glUniform3fv(light_feature_loc, 1, glm::value_ptr(specular_color));
+
+			int light_shininess_loc = glGetUniformLocation(shader_program, "material.shininess");
+			glUniform1i(light_shininess_loc, shininess);
+			
 		}
-
-		int light_feature_loc = glGetUniformLocation(shader_program, "light_feature.ambient");
-		glUniform3fv(light_feature_loc, 1, glm::value_ptr(ambient_color));
-
-		light_feature_loc = glGetUniformLocation(shader_program, "light_feature.diffuse");
-		glUniform3fv(light_feature_loc, 1, glm::value_ptr(diffuse_color));
-
-		light_feature_loc = glGetUniformLocation(shader_program, "light_feature.specular");
-		glUniform3fv(light_feature_loc, 1, glm::value_ptr(specular_color));
-
-		int light_shininess_loc = glGetUniformLocation(shader_program, "material.shininess");
-		glUniform1i(light_shininess_loc, shininess);
 	}
 
 	void Draw(Shader_Object* shader)
