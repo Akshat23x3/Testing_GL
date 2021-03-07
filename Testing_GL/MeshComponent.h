@@ -8,9 +8,10 @@ public:
 	{
 	}
 
-	void Load_Model(const GLchar* model_path)
+	Shader_Object* Load_Model(const GLchar* model_path)
 	{
 		model = new Model(model_path);
+		return GetShader();
 	}
 
 	Shader_Object* GetShader() { return model->GetShader(); }

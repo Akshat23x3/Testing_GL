@@ -82,6 +82,7 @@ class Application : public GL_GRAPHICS
     LIGHT_SHADER* light_shader = 0;
     Model* model = 0;
     CubeMapping* skybox = 0;
+    std::vector<Shader_Object*> shaders;
 	//GLuint EBO = 0;
 public:
 
@@ -118,7 +119,7 @@ void Application::Begin()
     SHADER_SOURCE_FILES* shader_file = CreateObjectComponent<SHADER_SOURCE_FILES>();
 
     meshcomp = new MeshComponent();
-    meshcomp->Load_Model("Data/models/nanosuit.obj");
+    shaders.push_back(meshcomp->Load_Model("Data/models/nanosuit.obj"));
 
     //Light
     light_shader = CreateObjectComponent<LIGHT_SHADER>();
@@ -154,7 +155,7 @@ void Application::run()
 
     meshcomp->Draw();
 
-    light_shader->Use(*Global_lighting, point_lights, SpotLight(), meshcomp->GetShader());
+    light_shader->Use(*Global_lighting, point_lights, SpotLight(), shaders);
 }
 
 Application::~Application()
