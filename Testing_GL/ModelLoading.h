@@ -33,6 +33,7 @@ public:
         {
             this->meshes[i].Draw(this->shader);
         }
+        glUseProgram(0);
     }
 
 	void ProcessNode(aiNode* node, const aiScene* scene)

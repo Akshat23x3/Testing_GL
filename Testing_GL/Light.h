@@ -226,34 +226,36 @@ void LIGHT_SHADER::Use(DirectionalLight dirlight, std::vector<PointLight> pointl
 		return;
 	for (auto& shader : shaders)
 	{
+		glUseProgram(shader->get_shader_program());
 		compile_directional_light(dirlight, shader);
 		compile_spot_light(spotlight, shader);
 		compile_point_light(pointlights, shader);
-
-		glBindVertexArray(0);
-
-		Transformations* transform = new Transformations();
-
-		glBindVertexArray(this->VAO);
-		glUseProgram(this->shader->get_shader_program());
-
-		for (int i = 0; i < pointlights.size(); i++)
-		{
-			transform->Set_Position(pointlights[i].GetPosition());
-			transform->Set_Rotation(glm::vec3(0.0f));
-			transform->Set_Scale(glm::vec3(0.2f));
-
-			int transform_loc = glGetUniformLocation(this->shader->get_shader_program(), "MVP");
-			glUniformMatrix4fv(transform_loc, 1, GL_FALSE, glm::value_ptr(transform->Project_On_Screen()));
-
-			int color_loc = glGetUniformLocation(this->shader->get_shader_program(), "light_color");
-			glUniform3fv(color_loc, 1, glm::value_ptr(pointlights[i].GetColor()));
-
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-		}
-
+		glUseProgram(0);
 		glBindVertexArray(0);
 	}
+
+	Transformations* transform = new Transformations();
+
+	glBindVertexArray(this->VAO);
+	glUseProgram(this->shader->get_shader_program());
+
+	for (int i = 0; i < pointlights.size(); i++)
+	{
+		transform->Set_Position(pointlights[i].GetPosition());
+		transform->Set_Rotation(glm::vec3(0.0f));
+		transform->Set_Scale(glm::vec3(0.2f));
+
+		int transform_loc = glGetUniformLocation(this->shader->get_shader_program(), "MVP");
+		glUniformMatrix4fv(transform_loc, 1, GL_FALSE, glm::value_ptr(transform->Project_On_Screen()));
+
+		int color_loc = glGetUniformLocation(this->shader->get_shader_program(), "light_color");
+		glUniform3fv(color_loc, 1, glm::value_ptr(pointlights[i].GetColor()));
+
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+	}
+
+	glBindVertexArray(0);
+	glUseProgram(0);
 
 }
 

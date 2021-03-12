@@ -7,7 +7,6 @@
 #include <vector>
 
 
-
 glm::vec3 cubePositions[] =
 {
     glm::vec3(0.0f, 0.0f, -3.0f),
@@ -79,10 +78,12 @@ class Application : public GL_GRAPHICS
     MeshComponent* meshcomp = 0;
     std::vector<PointLight> point_lights;
     DirectionalLight* Global_lighting = 0;
+    SpotLight* spot_light = 0;
     LIGHT_SHADER* light_shader = 0;
     Model* model = 0;
     CubeMapping* skybox = 0;
     std::vector<Shader_Object*> shaders;
+    Primitive_Models* model_p = 0;
 	//GLuint EBO = 0;
 public:
 
@@ -119,7 +120,10 @@ void Application::Begin()
     SHADER_SOURCE_FILES* shader_file = CreateObjectComponent<SHADER_SOURCE_FILES>();
 
     meshcomp = new MeshComponent();
+    model_p = new Primitive_Models();
+    shaders.push_back(model_p->Load_Plane("Data/Textures/floor.png"));
     shaders.push_back(meshcomp->Load_Model("Data/models/nanosuit.obj"));
+
 
     //Light
     light_shader = CreateObjectComponent<LIGHT_SHADER>();
@@ -129,9 +133,12 @@ void Application::Begin()
     for (int i = 0; i < 2; i++)
     {
         point_lights.push_back(PointLight());
+        point_lights[i].power = 5.0f;
     }
-    point_lights[0].SetPosition(glm::vec3(5.0f, 0.0f, 0.0f));
-    point_lights[1].SetPosition(glm::vec3(0.0f, 0.0f, 10.0f));
+    point_lights[0].SetPosition(glm::vec3(5.0f, 2.0f, 0.0f));
+    point_lights[1].SetPosition(glm::vec3(0.0f, 2.0f, 10.0f));
+    spot_light = new SpotLight();
+    spot_light->SetPosition(point_lights[1].GetPosition());
 
     //skybox = new CubeMapping("Night_Sky.png");
 }
@@ -139,7 +146,7 @@ void Application::Begin()
 
 void Application::run()
 {
-    EngineCamera->ProcessMovement(deltaTime);
+    EngineCamera->ProcessMovement(deltaTime, GetWindow());
     Global_lighting->power = 2.0f;
     glm::vec3 position = point_lights[0].GetPosition();
     position.x -= 0.5f * deltaTime;
@@ -147,15 +154,19 @@ void Application::run()
     position = point_lights[1].GetPosition();
     position.z -= 0.5f * deltaTime;
     point_lights[1].SetPosition(position);
+    spot_light->SetPosition(point_lights[1].GetPosition());
 
     //skybox->Render(meshcomp);
 
     meshcomp->Set_Scale(glm::vec3(0.1f));
-    meshcomp->Set_Position(glm::vec3(0.0f, -2.0f, -0.0f));
-
+    meshcomp->Set_Position(glm::vec3(0.0f, 0.0f, 0.0f));
     meshcomp->Draw();
 
-    light_shader->Use(*Global_lighting, point_lights, SpotLight(), shaders);
+    model_p->Set_Rotation(glm::vec3(90.0f, 0.0f, 0.0f));
+    model_p->Set_Position(glm::vec3(0.0f, -0.5f, 0.0f));
+    model_p->Draw();
+
+    light_shader->Use(*Global_lighting, point_lights, *spot_light, shaders);
 }
 
 Application::~Application()
@@ -179,12 +190,17 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
         }
     }
 }
+
+
 void ScrollCallback(GLFWwindow* window, double xOffset, double yOffset)
 {
     EngineCamera->ProcessMouseScroll(yOffset);
 }
+
+
 void MouseCallback(GLFWwindow* window, double xPos, double yPos)
 {
+
     if (first_Mouse)
     {
         lastMPOS.x = xPos;
@@ -200,12 +216,27 @@ void MouseCallback(GLFWwindow* window, double xPos, double yPos)
     EngineCamera->ProcessMouseMovement(xOffset, yOffset);
 }
 
+void SetCursorEnterCallBack(GLFWwindow* window, int entered)
+{
+    if (entered == 1)
+    {
+        bCursorInWindow = true;
+        std::cout << "Cursor has Entered The Window;" << std::endl;
+    }
+
+    if(entered == 0)
+    {
+        bCursorInWindow = false;
+        std::cout << "Cursor has Left The Window;" << std::endl;
+    }
+}
+
 void Application::initiateInput()
 {
+    glfwSetCursorEnterCallback(this->GetWindow(), SetCursorEnterCallBack);
     glfwSetKeyCallback(this->GetWindow(), KeyCallback);
     glfwSetCursorPosCallback(this->GetWindow(), MouseCallback);
     glfwSetScrollCallback(this->GetWindow(), ScrollCallback);
-    glfwSetInputMode(this->GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 

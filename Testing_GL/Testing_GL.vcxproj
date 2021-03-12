@@ -76,7 +76,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\C++ GAMES\Testing_GL\Dependencies\ASSIMP\include;D:\C++ GAMES\Testing_GL\Dependencies\SOIL2\include;D:\C++ GAMES\Testing_GL\Dependencies\GLM\glm;D:\C++ GAMES\Testing_GL\Dependencies\GLEW\include;D:\C++ GAMES\Testing_GL\Dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\C++ GAMES\Testing_GL\Dependencies\IMGUI\Include;D:\C++ GAMES\Testing_GL\Dependencies\ASSIMP\include;D:\C++ GAMES\Testing_GL\Dependencies\SOIL2\include;D:\C++ GAMES\Testing_GL\Dependencies\GLM\glm;D:\C++ GAMES\Testing_GL\Dependencies\GLEW\include;D:\C++ GAMES\Testing_GL\Dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -106,7 +106,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\C++ GAMES\Testing_GL\Dependencies\ASSIMP\include;D:\C++ GAMES\Testing_GL\Dependencies\SOIL2\include;D:\C++ GAMES\Testing_GL\Dependencies\GLM\glm;D:\C++ GAMES\Testing_GL\Dependencies\GLEW\include;D:\C++ GAMES\Testing_GL\Dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\C++ GAMES\Testing_GL\Dependencies\IMGUI\Include;D:\C++ GAMES\Testing_GL\Dependencies\ASSIMP\include;D:\C++ GAMES\Testing_GL\Dependencies\SOIL2\include;D:\C++ GAMES\Testing_GL\Dependencies\GLM\glm;D:\C++ GAMES\Testing_GL\Dependencies\GLEW\include;D:\C++ GAMES\Testing_GL\Dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -134,9 +134,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="imgui.cpp" />
+    <ClCompile Include="imgui_demo.cpp" />
+    <ClCompile Include="imgui_draw.cpp" />
+    <ClCompile Include="imgui_impl_glfw.cpp" />
+    <ClCompile Include="imgui_impl_opengl3.cpp" />
+    <ClCompile Include="imgui_impl_win32.cpp" />
+    <ClCompile Include="imgui_tables.cpp" />
+    <ClCompile Include="imgui_widgets.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ARK.h" />
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="CubeMapping.h" />
     <ClInclude Include="Light.h" />

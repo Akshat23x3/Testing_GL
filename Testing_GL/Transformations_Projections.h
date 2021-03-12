@@ -10,18 +10,19 @@ CameraComponent* EngineCamera = new CameraComponent();
 
 class Transformations
 {
-	glm::vec3 Position = glm::vec3(1);
-	glm::vec3 Rotation = glm::vec3(1);
+	glm::vec3 Position = glm::vec3(0.0f);
+	glm::vec3 Rotation = glm::vec3(0.0f);
 	glm::vec3 Scale = glm::vec3(1);
 
 	glm::mat4 projection = glm::perspective(glm::radians(EngineCamera->GetCameraZoom()), (GLfloat)WINDOW_WIDTH / WINDOW_HEIGHT, 0.1f, 1000.0f);
 	glm::mat4 model = glm::mat4(1.0f);
 	glm::mat4 view = glm::mat4(1.0f);
+	glm::vec3 WorldUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
 protected:
 	void reset_matrices()
 	{
-		this->Position = glm::vec3(1.0f); this->Scale = glm::vec3(1.0f); this->Rotation = glm::vec3(1.0f);
+		this->Position = glm::vec3(1.0f); this->Scale = glm::vec3(1.0f); this->Rotation = glm::vec3(0.0f);
 	}
 
 public:
@@ -51,4 +52,23 @@ public:
 	virtual glm::mat4 Get_Model_Matrix() { return this->model; }
 	virtual glm::mat4 Get_View_Matrix() { return EngineCamera->GetViewMatrix(); }
 	virtual glm::mat4 Get_Projection_Matrix() { return this->projection; }
+
+	glm::vec3 GetForwardVector()
+	{
+		glm::vec3 forward = glm::vec3(1.0f);
+		forward.x = cos(glm::radians(this->Rotation.x) * cos(glm::radians(this->Rotation.y)));
+		forward.y = sin(glm::radians(this->Rotation.y));
+		forward.z = sin(glm::radians(this->Rotation.x) * cos(glm::radians(this->Rotation.y)));
+		return glm::vec3(normalize(forward));
+	}
+
+	glm::vec3 GetRightVector()
+	{
+		return glm::normalize(glm::cross(this->GetForwardVector(), this->WorldUp));
+	}
+
+	glm::vec3 GetUpVector()
+	{
+		return glm::normalize(glm::cross(this->GetRightVector(), this->GetForwardVector()));
+	}
 };

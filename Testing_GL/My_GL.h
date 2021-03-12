@@ -3,12 +3,15 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "system.h"
+#include "ARK.h"
 
+bool bCursorInWindow = false;
+bool bActivateInCursor = false;
 
 class GL_GRAPHICS
 {
 	GLFWwindow* window = 0;
-	
+	ARK::ImGui_EventWindow* imguiwindow = 0;
 protected:
 	GLint Window_Width = 1280, Window_Height = 800; int Major_Version = 4, Minor_Version = 6;
 public:
@@ -65,13 +68,27 @@ int GL_GRAPHICS::intializeGraphics()
 	glViewport(0, 0, screenWidth, screenHeight);
 
 	this->Begin();
-	this->initiateInput();
 
 	GLfloat lastframe = 0.0f;
+
+	imguiwindow = new ARK::ImGui_EventWindow(window);
+
+	this->initiateInput();
 
 	//Looping until window closes
 	while (!glfwWindowShouldClose(window) && !glfwGetKey(this->window, GLFW_KEY_ESCAPE))
 	{
+		if (glfwGetMouseButton(GetWindow(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && bCursorInWindow)
+		{
+			bActivateInCursor = true;
+			glfwSetInputMode(GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		}
+		if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+		{
+			bActivateInCursor = false;
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		}
+		
 		//DeltaTime
 		GLfloat currentframe = (GLfloat)glfwGetTime();
 		deltaTime = currentframe - lastframe;
@@ -80,9 +97,16 @@ int GL_GRAPHICS::intializeGraphics()
 
 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
+		//ImGui Frame Rendering
+		imguiwindow->Frame_Rendering();
 
 		//Rendering
 		this->run();
+
+		//ImGui Render
+		imguiwindow->Render();
+
 		//Setting Front and Back Buffers
 		glfwSwapBuffers(window);
 
@@ -90,6 +114,9 @@ int GL_GRAPHICS::intializeGraphics()
 		glfwPollEvents();
 	}
 
+
+	imguiwindow->Shutdown();
 	glfwTerminate();
+	
 
 }

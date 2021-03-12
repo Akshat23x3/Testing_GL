@@ -50,7 +50,7 @@ public:
 	void ProcessKeyBoardMovement(Movement direction, GLfloat deltaTime);
 	void ProcessMouseMovement(GLfloat xOffset, GLfloat yOffset, GLboolean constrainPitch);
 	void ProcessMouseScroll(GLfloat scrollOffset);
-	void ProcessMovement(GLfloat DeltaTime);
+	void ProcessMovement(GLfloat DeltaTime, GLFWwindow* window);
 };
 
 void CameraComponent::UpdateCameraVectors()
@@ -91,48 +91,61 @@ void CameraComponent::ProcessKeyBoardMovement(Movement direction, GLfloat deltaT
 
 void CameraComponent::ProcessMouseMovement(GLfloat xOffset, GLfloat yOffset, GLboolean constrainPitch = true)
 {
-	xOffset *= this->camera_features->SENSTIVITY;
-	yOffset *= this->camera_features->SENSTIVITY;
-
-	this->camera_features->YAW -= xOffset;
-	this->camera_features->PITCH -= yOffset;
-
-	if (constrainPitch)
+	if (bActivateInCursor)
 	{
-		if (this->camera_features->PITCH > 89.0f) { this->camera_features->PITCH = 89.0f; }
-		if (this->camera_features->PITCH < -89.0f) { this->camera_features->PITCH = -89.0f; }
+		xOffset *= this->camera_features->SENSTIVITY;
+		yOffset *= this->camera_features->SENSTIVITY;
+
+		this->camera_features->YAW -= xOffset;
+		this->camera_features->PITCH -= yOffset;
+
+		if (constrainPitch)
+		{
+			if (this->camera_features->PITCH > 89.0f) { this->camera_features->PITCH = 89.0f; }
+			if (this->camera_features->PITCH < -89.0f) { this->camera_features->PITCH = -89.0f; }
+		}
+
+		this->UpdateCameraVectors();
 	}
 
-	this->UpdateCameraVectors();
 }
 
 void CameraComponent::ProcessMouseScroll(GLfloat scrollOffset)
 {
-	if (this->camera_features->ZOOM >= 1.0f && this->camera_features->ZOOM <= 45.0f){ this->camera_features->ZOOM -= scrollOffset; }
+	if(bActivateInCursor)
+	{
+		if (this->camera_features->ZOOM >= 1.0f && this->camera_features->ZOOM <= 45.0f) { this->camera_features->ZOOM -= scrollOffset; }
 
-	if (this->camera_features->ZOOM <= 1.0f){ this->camera_features->ZOOM = 1.0f; }
+		if (this->camera_features->ZOOM <= 1.0f) { this->camera_features->ZOOM = 1.0f; }
 
-	if (this->camera_features->ZOOM >= 45.0f) { this->camera_features->ZOOM = 45.0f; }
+		if (this->camera_features->ZOOM >= 45.0f) { this->camera_features->ZOOM = 45.0f; }
+	}
+
 }
 
 
-void CameraComponent::ProcessMovement(GLfloat DeltaTime)
+void CameraComponent::ProcessMovement(GLfloat DeltaTime,GLFWwindow* window)
 {
-	if (keys[GLFW_KEY_W])
+
+	if (bActivateInCursor)
 	{
-		this->ProcessKeyBoardMovement(Movement::FORWARD, DeltaTime);
-	}	
-	if (keys[GLFW_KEY_S])
-	{
-		this->ProcessKeyBoardMovement(Movement::BACKWARD, DeltaTime);
-	}	
-	if (keys[GLFW_KEY_A])
-	{
-		this->ProcessKeyBoardMovement(Movement::LEFT, DeltaTime);
-	}	
-	if (keys[GLFW_KEY_D])
-	{
-		this->ProcessKeyBoardMovement(Movement::RIGHT, DeltaTime);
+		if (keys[GLFW_KEY_W])
+		{
+			this->ProcessKeyBoardMovement(Movement::FORWARD, DeltaTime);
+		}
+		if (keys[GLFW_KEY_S])
+		{
+			this->ProcessKeyBoardMovement(Movement::BACKWARD, DeltaTime);
+		}
+		if (keys[GLFW_KEY_A])
+		{
+			this->ProcessKeyBoardMovement(Movement::LEFT, DeltaTime);
+		}
+		if (keys[GLFW_KEY_D])
+		{
+			this->ProcessKeyBoardMovement(Movement::RIGHT, DeltaTime);
+		}
 	}
+
 
 }
