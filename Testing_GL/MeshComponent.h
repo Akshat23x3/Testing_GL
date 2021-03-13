@@ -3,21 +3,39 @@
 class MeshComponent : public Transformations
 {
 	Model* model = 0;
+	glm::vec3 possesposition = glm::vec3(1.0f);
 public:
+	bool bPossesPlayer = false;
+
 	MeshComponent()
 	{
+		glm::vec3 possesposition = glm::vec3(this->LocalPosition.x, this->LocalPosition.y + 1.0f, this->LocalPosition.z - 1.f);
 	}
 
-	Shader_Object* Load_Model(const GLchar* model_path)
+	Shader_Object* Load_Model(std::string Directory, std::string FileName)
 	{
-		model = new Model(model_path);
+		model = new Model(Directory, FileName);
 		return model->GetShader();
+	}
+
+	void PlayerPosses()
+	{
+		if (bPossesPlayer)
+		{
+			possesposition = glm::vec3(this->LocalPosition.x, this->LocalPosition.y + 1.2f, this->LocalPosition.z - 1.8f);
+			EngineCamera->SetLocalPosition(possesposition);
+			
+			this->Set_WorldPosition(EngineCamera->GetWorldPosition());
+			//std::cout << "Player :: " << GetForwardVector().z << std::endl;
+			//std::cout << "Camera :: " << EngineCamera->GetForwardVector().z << std::endl;
+		}
 	}
 
 	//Shader_Object* GetShader() { return model->GetShader(); }
 
 	void Draw()
 	{
+		PlayerPosses();
 		model->Draw(this);
 	}
 };
@@ -82,6 +100,8 @@ public:
 	{
 		glBindVertexArray(this->VAO);
 		glUseProgram(this->shader->get_shader_program());
+
+		glDepthFunc(GL_LESS);
 		 
 		//Texture_Loading
 		glActiveTexture(GL_TEXTURE0);
@@ -107,7 +127,7 @@ public:
 		glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(this->Get_Model_Matrix()));
 
 		int viewpos_loc = glGetUniformLocation(this->shader->get_shader_program(), "viewpos");
-		glUniformMatrix4fv(viewpos_loc, 1, GL_FALSE, glm::value_ptr(EngineCamera->GetPosition()));
+		glUniformMatrix4fv(viewpos_loc, 1, GL_FALSE, glm::value_ptr(EngineCamera->GetWorldPosition()));
 
 		
 		glDrawArrays(GL_TRIANGLES, 0, 6);

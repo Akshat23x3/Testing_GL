@@ -41,8 +41,30 @@ public:
 	{
 
 		glEnable(GL_TEXTURE_2D);
-		GLuint diffuseNr = 1;
-		GLuint specularNr = 1;
+		GLuint diffuseNr = 0;
+		GLuint specularNr = 0;
+
+		for (int i = 0; i < textures.size(); i++)
+		{
+			std::string name_ = textures[i].type;
+			if (name_ == "diffuse")
+			{
+				diffuseNr++;
+			}
+			else if (name_ == "specular")
+			{
+				specularNr++;
+			}
+		}
+
+		int mat_size_loc = glGetUniformLocation(shader_program, "material_diffuse_size");
+		glUniform1i(mat_size_loc, diffuseNr);
+		mat_size_loc = glGetUniformLocation(shader_program, "material_specular_size");
+		glUniform1i(mat_size_loc, specularNr);
+
+		diffuseNr = -1;
+		specularNr = -1;
+
 		for (GLuint i = 0; i < textures.size(); i++)
 		{
 			glActiveTexture(GL_TEXTURE0 + i);
@@ -50,7 +72,7 @@ public:
 			std::string number;
 			std::string name = textures[i].type;
 
-			/*if (name == "diffuse")
+			if (name == "diffuse")
 			{
 				ss << diffuseNr++;
 			}
@@ -59,9 +81,15 @@ public:
 				ss << specularNr++;
 			}
 
-			number = ss.str();*/
+			number = ss.str();
+
+			std::string result_string = "material[" + number + "]." + name;
+			//std::cout << name << endl;
 			glBindTexture(GL_TEXTURE_2D, textures[i].GetTextureID());
-			glUniform1i(glGetUniformLocation(shader_program, ("material." + name).c_str()), i);
+			glUniform1i(glGetUniformLocation(shader_program, result_string.c_str()), i);
+
+			int light_shininess_loc = glGetUniformLocation(shader_program, "material[0].shininess");
+			glUniform1i(light_shininess_loc, shininess);
 
 			int light_feature_loc = glGetUniformLocation(shader_program, "light_feature.ambient");
 			glUniform3fv(light_feature_loc, 1, glm::value_ptr(ambient_color));
@@ -72,8 +100,7 @@ public:
 			light_feature_loc = glGetUniformLocation(shader_program, "light_feature.specular");
 			glUniform3fv(light_feature_loc, 1, glm::value_ptr(specular_color));
 
-			int light_shininess_loc = glGetUniformLocation(shader_program, "material.shininess");
-			glUniform1i(light_shininess_loc, shininess);
+
 			
 		}
 	}

@@ -5,7 +5,7 @@ struct Camera_Features
 	GLfloat YAW = -90.0f;
 	GLfloat PITCH = 0.0f;
 	GLfloat SPEED = 6.0f;
-	GLfloat SENSTIVITY = 0.25f;
+	GLfloat SENSTIVITY = 0.15f;
 	GLfloat ZOOM = 45.0f;
 	glm::vec3 WorldUp = glm::vec3(0.0f, 1.0f, 0.0f);
 };
@@ -23,7 +23,8 @@ class CameraComponent
 {
 protected:
 	Camera_Features* camera_features = new Camera_Features();
-	glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 WorldPosition = glm::vec3(0.0f);
+	glm::vec3 LocalPosition = glm::vec3(0.0f);
 	glm::vec3 Up = this->camera_features->WorldUp;
 	glm::vec3 forward = glm::vec3(0.0f, 0.0f, -1.0f);
 	glm::vec3 right = glm::cross(this->forward, this->camera_features->WorldUp);
@@ -35,15 +36,23 @@ public:
 		this->UpdateCameraVectors();
 	}
 
-	void SetPosition(glm::vec3 position) { this->position = position; }
-	glm::vec3 GetPosition() { return this->position; }
+	void SetWorldPosition(glm::vec3 WorldPosition) { this->WorldPosition = WorldPosition; }
+	void SetLocalPosition(glm::vec3 LocalPosition) { this->LocalPosition = LocalPosition; }
+	void SetWorldRotation(glm::vec2 WorldRotation)
+	{
+		this->camera_features->YAW = WorldRotation.y;
+		this->camera_features->PITCH = WorldRotation.x;
+	}
+	glm::vec3 GetWorldPosition() { return this->WorldPosition; }
+	glm::vec3 GetLocalPosition() { return this->LocalPosition; }
 	glm::vec3 GetForwardVector() { return this->forward; }
 	glm::vec3 GetRightVector() { return this->right; }
 	GLfloat GetCameraZoom() { return this->camera_features->ZOOM; }
+	void SetForwardVector(glm::vec3 forward) { this->forward = forward; }
 	
 	glm::mat4 GetViewMatrix()
 	{
-		return glm::lookAt(this->position, this->position + this->forward, this->Up);
+		return glm::lookAt(this->WorldPosition + this->LocalPosition, this->WorldPosition + this->LocalPosition + this->forward, this->Up);
 	}
 	
 	void UpdateCameraVectors();
@@ -70,22 +79,22 @@ void CameraComponent::ProcessKeyBoardMovement(Movement direction, GLfloat deltaT
 	GLfloat velocity = camera_features->SPEED * deltaTime;
 	if (Movement::FORWARD == direction)
 	{
-		this->position += this->forward * velocity;
+		this->WorldPosition += this->forward * velocity;
 	}
 
 	if (Movement::BACKWARD == direction)
 	{
-		this->position -= this->forward * velocity;
+		this->WorldPosition -= this->forward * velocity;
 	}
 
 	if (Movement::RIGHT == direction)
 	{
-		this->position += this->right * velocity;
+		this->WorldPosition += this->right * velocity;
 	}
 
 	if (Movement::LEFT == direction)
 	{
-		this->position -= this->right * velocity;
+		this->WorldPosition -= this->right * velocity;
 	}
 }
 

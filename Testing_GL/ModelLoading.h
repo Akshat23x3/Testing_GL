@@ -10,9 +10,9 @@ class Model
 public:
     Shader_Object* GetShader() { return shader; }
 
-    Model(const GLchar* path)
+    Model(std::string Directory, std::string FileName)
     {
-        this->loadModel(path);
+        this->loadModel(Directory, FileName);
         SHADER_SOURCE_FILES* shader_file = new SHADER_SOURCE_FILES();
         this->shader = new Shader_Object(shader_file->vertex_source, shader_file->fragment_source);
         this->shader->compile_shaders();
@@ -27,7 +27,7 @@ public:
         int model_loc = glGetUniformLocation(this->shader->get_shader_program(), "model");
         glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(transform->Get_Model_Matrix()));
         int viewpos_loc = glGetUniformLocation(this->shader->get_shader_program(), "viewpos");
-        glUniformMatrix4fv(viewpos_loc, 1, GL_FALSE, glm::value_ptr(EngineCamera->GetPosition()));
+        glUniformMatrix4fv(viewpos_loc, 1, GL_FALSE, glm::value_ptr(EngineCamera->GetWorldPosition()));
 
         for (GLuint i = 0; i < this->meshes.size(); i++)
         {
@@ -124,6 +124,8 @@ public:
             aiString str;
             mat->GetTexture(type, i, &str);
 
+            std::cout << str.C_Str() << endl;
+
             GLboolean skip = false;
 
             for (GLuint j = 0; j < textures_loaded.size(); j++)
@@ -153,18 +155,19 @@ public:
     }
 
 private:
-    void loadModel(const GLchar* path)
+    void loadModel(std::string Directory, std::string FileName)
     {
         Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+        this->directory = Directory;
+        std::cout << Directory + FileName << endl;
+        const aiScene* scene = importer.ReadFile((Directory + FileName).c_str(), aiProcess_Triangulate | aiProcess_FlipUVs);
 
         if (!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
         {
             cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << endl;
             return;
         }
-        this->directory = "Data/models";
-
+       
         this->ProcessNode(scene->mRootNode, scene);
     }
 };

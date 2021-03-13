@@ -92,9 +92,9 @@ public:
 		return Texture_ID;
 	}
 
-	GLuint Load_Texture(const char* path, std::string directory)
+	GLuint Load_Texture(std::string path, std::string directory)
 	{
-		const std::string texture_file_path = directory + '/' + path;
+		const std::string texture_file_path = directory + path;
 		glGenTextures(1, &Texture_ID);
 		glBindTexture(GL_TEXTURE_2D, Texture_ID);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);

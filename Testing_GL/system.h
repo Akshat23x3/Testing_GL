@@ -19,8 +19,8 @@ struct Last_MousePos
     GLfloat y = WINDOW_HEIGHT / 2.0;
 }lastMPOS;
 
-bool bCursorInWindow = false;
-bool bActivateInCursor = false;
+bool bCursorInWindow = true;
+bool bActivateInCursor = true;
 
 struct Vertex
 {

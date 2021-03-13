@@ -9,15 +9,14 @@
 
 class Application : public Engine::GL_GRAPHICS
 {
-    MeshComponent* meshcomp = 0;
+    std::vector<MeshComponent*> meshcomps;
     std::vector<PointLight> point_lights;
     DirectionalLight* Global_lighting = 0;
     SpotLight* spot_light = 0;
     LIGHT_SHADER* light_shader = 0;
-    Model* model = 0;
     CubeMapping* skybox = 0;
     std::vector<Shader_Object*> shaders;
-    Primitive_Models* model_p = 0;
+    //Primitive_Models* model_p = 0;
 	//GLuint EBO = 0;
 public:
 
@@ -50,13 +49,13 @@ void Application::Begin()
 	//Setting GL_SETTINGS AND OPTIONS
 	this->set_GL_options();
 
-    //Shader_Files Initiatings
-    SHADER_SOURCE_FILES* shader_file = CreateObjectComponent<SHADER_SOURCE_FILES>();
-
-    meshcomp = new MeshComponent();
-    model_p = new Primitive_Models();
-    shaders.push_back(model_p->Load_Plane("Data/Textures/floor.png"));
-    shaders.push_back(meshcomp->Load_Model("Data/models/nanosuit.obj"));
+    
+   // model_p = new Primitive_Models();
+    //shaders.push_back(model_p->Load_Plane("Data/Textures/floor.png"));
+    meshcomps.push_back(new MeshComponent());
+    shaders.push_back(meshcomps[0]->Load_Model("Data/models/nanosuit/", "nanosuit.obj"));
+    meshcomps.push_back(new MeshComponent());
+    shaders.push_back(meshcomps[1]->Load_Model("Data/models/tree_rocks/", "tree_X14_+X1_Rock_Pack.obj"));
 
 
     //Light
@@ -92,20 +91,28 @@ void Application::run()
 
     //skybox->Render(meshcomp);
 
-    meshcomp->Set_Scale(glm::vec3(0.1f));
-    meshcomp->Set_Position(glm::vec3(0.0f, 0.0f, 0.0f));
-    meshcomp->Draw();
 
-    model_p->Set_Rotation(glm::vec3(90.0f, 0.0f, 0.0f));
-    model_p->Set_Position(glm::vec3(0.0f, -0.5f, 0.0f));
-    model_p->Draw();
+    //meshcomp->Set_Rotation(glm::vec3(0.0f, 90.0f, 0.0f));
+    //meshcomp->bPossesPlayer = true;
+    //meshcomps[0]->Set_WorldScale(glm::vec3(0.1f));
+    //meshcomps[0]->Set_WorldPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+    for (auto& meshcomp : meshcomps)
+    {
+        meshcomp->Set_WorldScale(glm::vec3(0.1f));
+        meshcomp->Set_WorldPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+        meshcomp->Draw();
+    }
+
+    //model_p->Set_WorldRotation(glm::vec3(90.0f, 0.0f, 0.0f));
+    //model_p->Set_WorldPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+    //model_p->Draw();
 
     light_shader->Use(*Global_lighting, point_lights, *spot_light, shaders);
 }
 
 Application::~Application()
 {
-    delete meshcomp;
+    //delete meshcomps;
     delete light_shader;
 
 }
@@ -155,13 +162,13 @@ void SetCursorEnterCallBack(GLFWwindow* window, int entered)
     if (entered == 1)
     {
         bCursorInWindow = true;
-        std::cout << "Cursor has Entered The Window;" << std::endl;
+        //std::cout << "Cursor has Entered The Window;" << std::endl;
     }
 
     if(entered == 0)
     {
         bCursorInWindow = false;
-        std::cout << "Cursor has Left The Window;" << std::endl;
+        //std::cout << "Cursor has Left The Window;" << std::endl;
     }
 }
 

@@ -1,0 +1,174 @@
+# Blender MTL File: 'tree_X14_+X1_Rock_Pack.blend'
+# Material Count: 13
+
+newmtl Rock_1_
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Rock_1_.png
+map_Bump Rock_1_.png
+map_Ks Rock_1_.png
+
+newmtl _10_tree
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd _10_tree.png
+map_Bump _10_tree.png
+map_Ks _10_tree.png
+
+newmtl _11_tree
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd _11_tree.png
+map_Bump _11_tree.png
+map_Ks _11_tree.png
+
+newmtl _12_tree
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd _12_tree.png
+map_Bump _12_tree.png
+map_Ks _12_tree.png
+
+newmtl _1_tree
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd _1_tree.png
+map_Bump _1_tree.png
+map_Ks _1_tree.png
+
+
+newmtl _2_tree
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd _2_tree.png
+map_Bump _2_tree.png
+map_Ks _2_tree.png
+
+
+newmtl _3_tree
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd _3_tree.png
+map_Bump _3_tree.png
+map_Ks _3_tree.png
+
+newmtl _4_tree
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd _4_tree.png
+map_Bump _4_tree.png
+map_Ks _4_tree.png
+
+newmtl _5_tree
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd _5_tree.png
+map_Bump _5_tree.png
+map_Ks _5_tree.png
+
+
+newmtl _6_tree
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd _6_tree.png
+map_Bump _6_tree.png
+map_Ks _6_tree.png
+
+newmtl _7_tree
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd _7_tree.png
+map_Bump _7_tree.png
+map_Ks _7_tree.png
+
+newmtl _8_tree
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd _8_tree.png
+map_Bump _8_tree.png
+map_Ks _8_tree.png
+
+newmtl _9_tree
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd _9_tree.png
+map_Bump _9_tree.png
+map_Ks _9_tree.png

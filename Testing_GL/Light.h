@@ -241,9 +241,9 @@ void LIGHT_SHADER::Use(DirectionalLight dirlight, std::vector<PointLight> pointl
 
 	for (int i = 0; i < pointlights.size(); i++)
 	{
-		transform->Set_Position(pointlights[i].GetPosition());
-		transform->Set_Rotation(glm::vec3(0.0f));
-		transform->Set_Scale(glm::vec3(0.2f));
+		transform->Set_WorldPosition(pointlights[i].GetPosition());
+		transform->Set_WorldRotation(glm::vec3(0.0f));
+		transform->Set_WorldScale(glm::vec3(0.2f));
 
 		int transform_loc = glGetUniformLocation(this->shader->get_shader_program(), "MVP");
 		glUniformMatrix4fv(transform_loc, 1, GL_FALSE, glm::value_ptr(transform->Project_On_Screen()));

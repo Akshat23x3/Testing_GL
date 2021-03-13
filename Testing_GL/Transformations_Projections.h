@@ -10,45 +10,69 @@ CameraComponent* EngineCamera = new CameraComponent();
 
 class Transformations
 {
-	glm::vec3 Position = glm::vec3(0.0f);
-	glm::vec3 Rotation = glm::vec3(0.0f);
-	glm::vec3 Scale = glm::vec3(1);
+
+protected:
+	glm::vec3 LocalPosition = glm::vec3(0.0f);
+	glm::vec3 LocalRotation = glm::vec3(0.0f);
+	glm::vec3 LocalScale = glm::vec3(0.0f);
+	glm::vec3 WorldPosition = glm::vec3(0.0f);
+	glm::vec3 WorldRotation = glm::vec3(0.0f);
+	glm::vec3 WorldScale = glm::vec3(1);
 
 	glm::mat4 projection = glm::perspective(glm::radians(EngineCamera->GetCameraZoom()), (GLfloat)WINDOW_WIDTH / WINDOW_HEIGHT, 0.1f, 1000.0f);
 	glm::mat4 model = glm::mat4(1.0f);
 	glm::mat4 view = glm::mat4(1.0f);
 	glm::vec3 WorldUp = glm::vec3(0.0f, 1.0f, 0.0f);
-
-protected:
 	void reset_matrices()
 	{
-		this->Position = glm::vec3(1.0f); this->Scale = glm::vec3(1.0f); this->Rotation = glm::vec3(0.0f);
+		this->LocalPosition = glm::vec3(1.0f);
+		this->WorldPosition = glm::vec3(1.0f); this->WorldScale = glm::vec3(1.0f); this->WorldRotation = glm::vec3(0.0f);
 	}
 
 public:
+	Transformations()
+	{
+		glm::vec3 LocalPosition = glm::vec3(0.0f);
+		glm::vec3 LocalRotation = glm::vec3(0.0f);
+		glm::vec3 LocalScale = glm::vec3(0.0f);
+		glm::vec3 WorldPosition = glm::vec3(0.0f);
+		glm::vec3 WorldRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+		glm::vec3 WorldScale = glm::vec3(1.0);
+
+		//glm::mat4 projection = glm::perspective(glm::radians(EngineCamera->GetCameraZoom()), (GLfloat)WINDOW_WIDTH / WINDOW_HEIGHT, 0.1f, 1000.0f);
+		glm::mat4 model = glm::mat4(1.0f);
+		glm::mat4 view = glm::mat4(1.0f);
+		glm::vec3 WorldUp = glm::vec3(0.0f, 1.0f, 0.0f);
+	}
 	glm::mat4 Project_On_Screen()
 	{
 		model = glm::mat4(1.0f);
 		view = glm::mat4(1.0f);
 
-		model = glm::translate(model, this->Position);
-		model = glm::rotate(model, glm::radians(this->Rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::rotate(model, glm::radians(this->Rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::rotate(model, glm::radians(this->Rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
-		model = glm::scale(model, Scale);
+		model = glm::translate(model, this->WorldPosition + this->LocalPosition);
+		model = glm::rotate(model, glm::radians(this->WorldRotation.x + this->LocalRotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(this->WorldRotation.y + this->LocalRotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(this->WorldRotation.z + this->LocalRotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::scale(model, this->WorldScale + this->LocalScale);
 
 		view = EngineCamera->GetViewMatrix();
 
 		return projection * view * model;
 	}
 
-	virtual void Set_Position(glm::vec3 Position) { this->Position = Position; }
-	virtual void Set_Rotation(glm::vec3 Rotation) { this->Rotation = Rotation; }
-	virtual void Set_Scale(glm::vec3 Scale) { this->Scale = Scale; }
+	virtual void Set_WorldPosition(glm::vec3 WorldPosition) { this->WorldPosition = WorldPosition; }
+	virtual void Set_WorldRotation(glm::vec3 WorldRotation) { this->WorldRotation = WorldRotation; }
+	virtual void Set_WorldScale(glm::vec3 WorldScale) { this->WorldScale = WorldScale; }
+	virtual void Set_LocalPosition(glm::vec3 LocalPosition) { this->LocalPosition = LocalPosition; }
+	virtual void Set_LocalRotation(glm::vec3 LocalRotation) { this->LocalRotation = LocalRotation; }
+	virtual void Set_LocalScale(glm::vec3 LocalScale) { this->LocalScale = LocalScale; }
 
-	virtual glm::vec3 Get_Position() { return this->Position; }
-	virtual glm::vec3 Get_Rotation() { return this->Rotation; }
-	virtual glm::vec3 Get_Scale() { return this->Scale; }
+	virtual glm::vec3 Get_WorldPosition() { return this->WorldPosition; }
+	virtual glm::vec3 Get_WorldRotation() { return this->WorldRotation; }
+	virtual glm::vec3 Get_WorldScale() { return this->WorldScale; }
+	virtual glm::vec3 Get_LocalPosition() { return this->LocalPosition; }
+	virtual glm::vec3 Get_LocalRotation() { return this->LocalRotation; }
+	virtual glm::vec3 Get_LocalScale() { return this->LocalScale; } 
 	virtual glm::mat4 Get_Model_Matrix() { return this->model; }
 	virtual glm::mat4 Get_View_Matrix() { return EngineCamera->GetViewMatrix(); }
 	virtual glm::mat4 Get_Projection_Matrix() { return this->projection; }
@@ -56,9 +80,9 @@ public:
 	glm::vec3 GetForwardVector()
 	{
 		glm::vec3 forward = glm::vec3(1.0f);
-		forward.x = cos(glm::radians(this->Rotation.x) * cos(glm::radians(this->Rotation.y)));
-		forward.y = sin(glm::radians(this->Rotation.y));
-		forward.z = sin(glm::radians(this->Rotation.x) * cos(glm::radians(this->Rotation.y)));
+		forward.x = cos(glm::radians(this->WorldRotation.y) * cos(glm::radians(this->WorldRotation.x)));
+		forward.y = sin(glm::radians(this->WorldRotation.x));
+		forward.z = sin(glm::radians(this->WorldRotation.y) * cos(glm::radians(this->WorldRotation.x)));
 		return glm::vec3(normalize(forward));
 	}
 

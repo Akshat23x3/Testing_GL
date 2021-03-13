@@ -37,7 +37,7 @@ namespace Engine
 
 		void Render()
 		{
-			// render your GUI
+			// Render GUI
 			ImGui::Begin("Scene");
 			ImGui::Button("Hello!");
 			ImGui::End();
@@ -106,16 +106,13 @@ namespace Engine
 
 		glfwMakeContextCurrent(window);
 
-		// Set this to true so GLEW knows to use a modern approach to retrieving function pointers and extensions
 		glewExperimental = GL_TRUE;
 
-		// Initialize GLEW to setup the OpenGL Function pointers
 		if (GLEW_OK != glewInit())
 		{
 			std::cout << "Failed to initialize GLEW" << std::endl; return EXIT_FAILURE;
 		}
 
-		// Define the viewport dimensions
 		glViewport(0, 0, screenWidth, screenHeight);
 
 		this->Begin();
@@ -126,10 +123,9 @@ namespace Engine
 
 		this->initiateInput();
 
-		//Looping until window closes
 		while (!glfwWindowShouldClose(window))
 		{
-			if (glfwGetMouseButton(GetWindow(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && bCursorInWindow)
+			if (glfwGetMouseButton(GetWindow(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && bCursorInWindow || bCursorInWindow && bActivateInCursor)
 			{
 				bActivateInCursor = true;
 				glfwSetInputMode(GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
