@@ -145,14 +145,13 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ARK.h" />
+    <ClInclude Include="ARKEngine.h" />
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="CubeMapping.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="MeshComponent.h" />
     <ClInclude Include="MeshLoading.h" />
     <ClInclude Include="ModelLoading.h" />
-    <ClInclude Include="My_GL.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Shader_Files.h" />
     <ClInclude Include="Shader_Object.h" />

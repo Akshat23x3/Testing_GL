@@ -56,9 +56,6 @@
     <ClInclude Include="system.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="My_GL.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Textures.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -86,7 +83,7 @@
     <ClInclude Include="MeshComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ARK.h">
+    <ClInclude Include="ARKEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
